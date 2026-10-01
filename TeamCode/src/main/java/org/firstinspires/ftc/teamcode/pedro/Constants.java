@@ -36,11 +36,22 @@ public class Constants {
         c.backRightDirection.set(DcMotorSimple.Direction.FORWARD);
     });
 
+//    public static PinpointConfig localizerConfig = new PinpointConfig(c -> {
+//        c.name.set("pinpoint");
+//        c.podType.set(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
+//        c.xPodOffset.set(5.51542267085999);
+//        c.yPodOffset.set(7.078430295929196);
+//        c.xPodDirection.set(GoBildaPinpointDriver.EncoderDirection.REVERSED);
+//        c.yPodDirection.set(GoBildaPinpointDriver.EncoderDirection.REVERSED);
+//        c.globalDistanceUnit.set(DistanceUnit.INCH);
+//        c.offsetUnits.set(DistanceUnit.INCH);
+//    });
+
     public static PinpointConfig localizerConfig = new PinpointConfig(c -> {
         c.name.set("pinpoint");
         c.podType.set(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-        c.xPodOffset.set(5.51542267085999);
-        c.yPodOffset.set(7.078430295929196);
+        c.xPodOffset.set(5.471423892524299);
+        c.yPodOffset.set(8.201533640463522);
         c.xPodDirection.set(GoBildaPinpointDriver.EncoderDirection.REVERSED);
         c.yPodDirection.set(GoBildaPinpointDriver.EncoderDirection.REVERSED);
         c.globalDistanceUnit.set(DistanceUnit.INCH);
