@@ -24,26 +24,28 @@ import static com.pedropathing.api.Paths.*;
         private final PoseFactory poseFactory = PoseFactory.degrees();
 
         // Poses
-        private final Pose q = poseFactory.of(24, 24, 0);
-        private final Pose w = poseFactory.of(48, 24, 90);
-        private final Pose e = poseFactory.of(48, 48, 0);
-        private final Pose r = poseFactory.of(24, 48, 90);
+        private final Pose q = poseFactory.of(0, 0, 0);
+        private final Pose w = poseFactory.of(12, 0, 0);
+        private final Pose e = poseFactory.of(12, 12, 0);
+        private final Pose r = poseFactory.of(0, 12, 0);
 
         // Path methods
         private Path one() {
-            return line(q, w).linear(q, w);
+            return line(q, w).constant(0);
         }
 
+        //linear(q, w)
+
         private Path two(){
-            return line(w, e).linear(w, e);
+            return line(w, e).constant(0);
         }
 
         private Path three(){
-            return line(e, r).linear(e, r);
+            return line(e, r).constant(0);
         }
 
         private Path four(){
-            return line(r, q).linear(r, q);
+            return line(r, q).constant(0);
         }
 
         private Command autoRoutine() {

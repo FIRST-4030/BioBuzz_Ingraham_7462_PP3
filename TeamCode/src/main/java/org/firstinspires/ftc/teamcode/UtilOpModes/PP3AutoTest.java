@@ -98,7 +98,7 @@ public class PP3AutoTest extends OpMode {
 
     @Override
     public void loop() {
-        follower.update();
         Scheduler.execute();
+        follower.update();
     }
 }
