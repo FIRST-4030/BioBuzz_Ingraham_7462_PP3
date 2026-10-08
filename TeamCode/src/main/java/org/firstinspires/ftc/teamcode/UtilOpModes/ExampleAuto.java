@@ -25,36 +25,36 @@ import static com.pedropathing.api.Paths.*;
 
         // Poses
         private final Pose q = poseFactory.of(0, 0, 0);
-        private final Pose w = poseFactory.of(12, 0, 0);
-        private final Pose e = poseFactory.of(12, 12, 0);
-        private final Pose r = poseFactory.of(0, 12, 0);
+        private final Pose w = poseFactory.of(0, 36 ,90);
+        private final Pose e = poseFactory.of(36, 36, 180);
+    private final Pose r = poseFactory.of(0, 36, 270);
+    private final Pose midPoint = poseFactory.of(0, 30, 45);
 
         // Path methods
         private Path one() {
-            return line(q, w).constant(0);
+            return line(q, w).linear(q,w);
+//            return curve(q, midPoint, w).linear(q,w);
         }
 
-        //linear(q, w)
-
         private Path two(){
-            return line(w, e).constant(0);
+            return line(w, e).linear(w,e);
         }
 
         private Path three(){
-            return line(e, r).constant(0);
+            return line(e, r).linear(e,r);
         }
 
         private Path four(){
-            return line(r, q).constant(0);
+            return line(r, q).linear(r,q);
         }
 
         private Command autoRoutine() {
             return sequential(
-                    follow(follower, one()),
+                    follow(follower, one())
                     // Add mechanism commands here.
-                    follow(follower, two()),
-                    follow(follower, three()),
-                    follow(follower, four())
+//                    follow(follower, two()),
+//                    follow(follower, three()),
+//                    follow(follower, four())
 
             );
         }
@@ -79,9 +79,9 @@ import static com.pedropathing.api.Paths.*;
             Scheduler.execute();
             // add your other methods needed in the loop here
 
-//            telemetryData.addData("X", follower.pose().x());
-//            telemetryData.addData("Y", follower.pose().y());
-//            telemetryData.addData("Heading", Math.toDegrees(follower.pose().heading()));
+            telemetry.addData("X", follower.pose().x());
+            telemetry.addData("Y", follower.pose().y());
+            telemetry.addData("Heading", Math.toDegrees(follower.pose().heading()));
             telemetry.addData("Follower Mode", follower.mode());
             telemetry.update();
         }
