@@ -17,6 +17,7 @@ import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 import static com.pedropathing.api.Paths.*;
 
 
+@Disabled
 @Autonomous
 public class PP3AutoTest extends OpMode {
     private Follower follower;

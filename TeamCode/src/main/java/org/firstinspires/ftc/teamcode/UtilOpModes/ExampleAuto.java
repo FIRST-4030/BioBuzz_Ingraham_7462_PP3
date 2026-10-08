@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.UtilOpModes;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.pedropathing.follower.Follower;
@@ -10,80 +9,101 @@ import com.pedropathing.math.Pose;
 import com.pedropathing.paths.Path;
 import com.pedropathing.ivy.Scheduler;
 import com.pedropathing.ivy.Command;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import static com.pedropathing.ivy.Scheduler.schedule;
+import static com.pedropathing.ivy.commands.Commands.instant;
+import static com.pedropathing.ivy.commands.Commands.waitMs;
 import static com.pedropathing.ivy.groups.Groups.sequential;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 import static com.pedropathing.api.Paths.*;
 
+@Autonomous(name="ExampleAuto")
+public class ExampleAuto extends OpMode {
+    private Follower follower;
+    private final PoseFactory poseFactory = PoseFactory.degrees();
 
+    public static Servo flag;
 
-@Autonomous
-    public class ExampleAuto extends OpMode {
-        private Follower follower;
-        private final PoseFactory poseFactory = PoseFactory.degrees();
-
-        // Poses
-        private final Pose q = poseFactory.of(0, 0, 0);
-        private final Pose w = poseFactory.of(0, 36 ,90);
-        private final Pose e = poseFactory.of(36, 36, 180);
+    // Poses
+    private final Pose q = poseFactory.of(60, 8, 90);
+    private final Pose w = poseFactory.of(60, 32 ,90);
+    private final Pose e = poseFactory.of(20, 32, 180);
     private final Pose r = poseFactory.of(0, 36, 270);
-    private final Pose midPoint = poseFactory.of(0, 30, 45);
 
-        // Path methods
-        private Path one() {
-            return line(q, w).linear(q,w);
-//            return curve(q, midPoint, w).linear(q,w);
-        }
+    @Override
+    public void init() {
+        Scheduler.reset();
 
-        private Path two(){
-            return line(w, e).linear(w,e);
-        }
+        follower = Constants.create(hardwareMap);
+        follower.setPose(q);
+        follower.update();
 
-        private Path three(){
-            return line(e, r).linear(e,r);
-        }
+        flag = hardwareMap.get(Servo.class, "flag");
+        flag.scaleRange(0,1);
+        flag.setPosition(0);
 
-        private Path four(){
-            return line(r, q).linear(r,q);
-        }
-
-        private Command autoRoutine() {
-            return sequential(
-                    follow(follower, one())
-                    // Add mechanism commands here.
-//                    follow(follower, two()),
-//                    follow(follower, three()),
-//                    follow(follower, four())
-
-            );
-        }
-
-        @Override
-        public void init() {
-            Scheduler.reset();
-
-            follower = Constants.create(hardwareMap);
-            follower.setPose(q);
-            follower.update();
-        }
-
-        @Override
-        public void start() {
-            schedule(autoRoutine());
-        }
-
-        @Override
-        public void loop() {
-            follower.update();
-            Scheduler.execute();
-            // add your other methods needed in the loop here
-
-            telemetry.addData("X", follower.pose().x());
-            telemetry.addData("Y", follower.pose().y());
-            telemetry.addData("Heading", Math.toDegrees(follower.pose().heading()));
-            telemetry.addData("Follower Mode", follower.mode());
-            telemetry.update();
-        }
+        telemetry.addData("X", follower.pose().x());
+        telemetry.addData("Y", follower.pose().y());
+        telemetry.addData("Heading", Math.toDegrees(follower.pose().heading()));
+        telemetry.addData("Follower Mode", follower.mode());
+        telemetry.update();
     }
+
+    @Override
+    public void start() {
+        schedule(autoRoutine());
+    }
+
+    @Override
+    public void loop() {
+        follower.update();
+        Scheduler.execute();
+        // add your other methods needed in the loop here
+
+        telemetry.addData("X", follower.pose().x());
+        telemetry.addData("Y", follower.pose().y());
+        telemetry.addData("Heading", Math.toDegrees(follower.pose().heading()));
+        telemetry.addData("Follower Mode", follower.mode());
+        telemetry.update();
+    }
+
+    // Path methods
+    public Path one() {
+        return line(q, w).linear(q,w);
+//        return curve(q, midPoint, w).linear(q,w);
+    }
+
+    public Path two(){
+        return line(w, e).linear(w,e);
+    }
+
+    public Path three(){
+        return line(e, r).linear(e,r);
+    }
+
+    public Path four(){
+        return line(r, q).linear(r,q);
+    }
+
+    public Command autoRoutine() {
+        return sequential(
+            follow(follower, one()),
+            turnServo(0.6),
+            turnServo(0),
+            turnServo(.4),
+            turnServo(0),
+            waitMs(2000),
+                follow(follower, two())
+
+//            follow(follower, three()),
+//            follow(follower, four())
+
+        );
+    }
+
+    public static Command turnServo(double targetPos) {
+        return sequential(instant(() -> flag.setPosition(targetPos)), waitMs(200));
+    }
+}
 

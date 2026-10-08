@@ -34,6 +34,7 @@ public class Constants {
         c.frontRightDirection.set(DcMotorSimple.Direction.FORWARD);
         c.backLeftDirection.set(DcMotorSimple.Direction.REVERSE);
         c.backRightDirection.set(DcMotorSimple.Direction.FORWARD);
+        c.powerThreshold.set(0.7);
     });
 
 //    public static PinpointConfig localizerConfig = new PinpointConfig(c -> {
