@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.hardware.Servo;
  * @date 11/13/2025
  */
 @TeleOp(name = "ServoTester", group="Util")
-public class ServoTester extends OpMode {
+public class  ServoTester extends OpMode {
 //    @Override
 //    public void init() {
 //
@@ -24,7 +24,7 @@ public class ServoTester extends OpMode {
 //
 //    }
 
-    String DEVICE_NAME = "liftServo";
+    String DEVICE_NAME = "spinServo";
 
     Servo   servo;
     double  position = 0.5;
