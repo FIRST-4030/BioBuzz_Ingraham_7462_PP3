@@ -1,8 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -10,7 +11,6 @@ public class Chassis {
 
     //    private double maxPower = 1.0;
     private double maxSpeed = 1.0;  // make this slower for outreaches
-    private double kPTurn = 0.10;
 
     public DcMotor frontLeftDrive, frontRightDrive, backLeftDrive, backRightDrive;
 
@@ -77,6 +77,19 @@ public class Chassis {
 //        backRightDrive.setPower(backRightPower);
     }
 
+    public void lockedOnDrive(double forward, double right, Limelight limelight) {
+        // TODO: Better PID equation for this instead of just a lerp
+        this.drive(forward, right, limelight.getXError() / 35);
+    }
+
+    public void chasingDrive(double forward, double right, Gamepad gamepad, Limelight limelight) {
+        if (limelight.resultHasGoodTargets()) {
+            double weightedTargetAreaPercentage = Range.clip(limelight.getLatestResult().getTa() * 2, 0, 1);
+            this.drive(-1 + weightedTargetAreaPercentage, limelight.getXError() / 20, limelight.getXError() / 35);
+        }
+        this.drive(0, 0, 0);
+    }
+
 //    public void setMaxPower(double maxPower) {
 //        this.maxPower = maxPower;
 //    }
@@ -97,45 +110,6 @@ public class Chassis {
         frontRightDrive.setPower(frontrightpower);
         backLeftDrive.setPower(backleftpower);
         backRightDrive.setPower(backrightpower);
-    }
-
-    // NOTE:
-    // Don't want to use these turn, turnTo, and moveForward methods; they freeze the whole
-    // program with a while loop. Pedro would work better anyway.
-
-    public void turn(double power, double mseconds) {
-        ElapsedTime timer = new ElapsedTime();
-        timer.reset();
-
-        while (timer.milliseconds() < mseconds) {
-            frontLeftDrive.setPower(power);
-            backLeftDrive.setPower(power);
-            frontRightDrive.setPower(-power);
-            backRightDrive.setPower(-power);
-        }
-
-        stopMotors();
-    }
-
-    public void turnTo(double currentAngle, double setPoint) {
-        double error = setPoint - currentAngle;
-
-        double power = kPTurn*error;
-        moveAllMotors(-power,power,-power,power);
-    }
-
-    public void moveForward(double power, double mseconds) {
-        ElapsedTime timer = new ElapsedTime();
-        timer.reset();
-
-        while (timer.milliseconds() < mseconds) {
-            frontLeftDrive.setPower(power);
-            backLeftDrive.setPower(power);
-            frontRightDrive.setPower(power);
-            backRightDrive.setPower(power);
-        }
-
-        stopMotors();
     }
 
     public void getMotorSpeed(Telemetry telemetry) {
