@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.UtilOpModes;
+package org.firstinspires.ftc.teamcode.OpModes;
 
 import static com.pedropathing.api.Paths.curve;
 import static com.pedropathing.api.Paths.line;
@@ -9,12 +9,11 @@ import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.ivy.Command;
 import com.pedropathing.ivy.Scheduler;
-import com.pedropathing.math.Pose;
-import com.pedropathing.math.Vector2D;
 import com.pedropathing.paths.Path;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
+import org.firstinspires.ftc.teamcode.UtilOpModes.Poses;
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 
 

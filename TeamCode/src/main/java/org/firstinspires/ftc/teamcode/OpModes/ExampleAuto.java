@@ -1,5 +1,6 @@
-package org.firstinspires.ftc.teamcode.UtilOpModes;
+package org.firstinspires.ftc.teamcode.OpModes;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.pedropathing.follower.Follower;
@@ -18,6 +19,7 @@ import static com.pedropathing.ivy.groups.Groups.sequential;
 import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 import static com.pedropathing.api.Paths.*;
 
+@Disabled
 @Autonomous(name="ExampleAuto")
 public class ExampleAuto extends OpMode {
     private Follower follower;
