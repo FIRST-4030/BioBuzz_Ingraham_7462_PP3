@@ -64,8 +64,8 @@ public class PP3Auto extends OpMode {
     private Command autoRoutine(){
         return sequential(
                 follow(follower, startToHive()),
-                follow(follower, hiveToGarden()),
-                follow(follower, gardenToHive()),
+//                follow(follower, hiveToGarden()),
+//                follow(follower, gardenToHive()),
                 follow(follower, hiveToPark())
         );
     }

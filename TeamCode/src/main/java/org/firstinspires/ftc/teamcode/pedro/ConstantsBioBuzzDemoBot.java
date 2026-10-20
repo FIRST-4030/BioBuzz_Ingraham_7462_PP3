@@ -19,9 +19,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 public class ConstantsBioBuzzDemoBot {
     public static Follower create(HardwareMap h) {
         return new Follower(
-                new PinpointLocalizer(h, localizerConfig),
-                new Mecanum(h, drivetrainConfig),
-                new Foresight(foresightConfig)
+            new PinpointLocalizer(h, localizerConfig),
+            new Mecanum(h, drivetrainConfig),
+            new Foresight(foresightConfig)
         );
     }
 
