@@ -13,12 +13,13 @@ import com.pedropathing.paths.Path;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
+import org.firstinspires.ftc.teamcode.ControlHub;
 import org.firstinspires.ftc.teamcode.UtilOpModes.Poses;
-import org.firstinspires.ftc.teamcode.pedro.Constants;
 
 
 @Autonomous
 public class PP3Auto extends OpMode {
+    ControlHub controlHub;
     private Follower follower;
     //bank of poses
     Poses poses = new Poses();
@@ -70,10 +71,13 @@ public class PP3Auto extends OpMode {
     }
     @Override
     public void init() {
+        controlHub = new ControlHub(hardwareMap);
+
         //Reset movements
         Scheduler.reset();
         //initializes follower
-        follower = Constants.create(hardwareMap);
+//        follower = Constants.create(hardwareMap);
+        follower = controlHub.getRobotSpecificPedroConstants();
 
         //sets pose to "start"
         follower.setPose(poses.autoStartPos);

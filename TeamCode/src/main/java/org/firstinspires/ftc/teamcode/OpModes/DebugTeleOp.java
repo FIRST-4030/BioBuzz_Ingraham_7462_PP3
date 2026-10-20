@@ -25,7 +25,7 @@ public class DebugTeleOp extends OpMode {
 
     @Override
     public void init() {
-        controlHub = new ControlHub();
+        controlHub = new ControlHub(hardwareMap);
 
         imu = hardwareMap.get(IMU.class, "imu");
         limelight = new Limelight(hardwareMap);
