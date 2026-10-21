@@ -26,10 +26,9 @@ public class Shooter {
 
     private static final double COUNTS_PER_REV = 28 ;  // REV HD Hex 1:1 leftMotor Encoder
     private static final double errorMargin = 0.02;
-    private static final double COLLECTOR_LOW_POWER = 0.5;
-    private static final double COLLECTOR_HIGH_POWER = 1.0;
 
-    private double targetVelocity = 0;
+    public double targetVelocity = 0;
+    public double SHOOTER_IDLE_POWER = 0.2;
 //    public Flywheel flipperFlywheel;
     Limelight limelight;
     Collector collector;
@@ -45,13 +44,12 @@ public class Shooter {
 
     public enum ShooterMode {
         IDLE,
-        COLLECTING,
         SHOOTING
     }
 
-    private ShooterMode shooterMode = ShooterMode.COLLECTING;
+    private ShooterMode shooterMode = ShooterMode.IDLE;
 
-    public Shooter(HardwareMap hardwareMap, Limelight limelight, Collector collector) {
+    public Shooter(HardwareMap hardwareMap, Limelight limelight) {
 
         leftMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "leftShooter");
         leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -64,57 +62,37 @@ public class Shooter {
         rightMotor.setDirection(DcMotor.Direction.FORWARD);
 
         this.limelight = limelight;
-        this.collector = collector;
     }
 
-    public void update() {
-//        if (!isPotentiometerConnected()) {
-//            shooterFlywheel.stop();
-//            return;
+//    public void update() {
+////        if (!isPotentiometerConnected()) {
+////            shooterFlywheel.stop();
+////            return;
+////        }
+//
+//        switch (shooterMode) {
+//            case IDLE:
+//                idleModeUpdate();
+//                break;
+//            case SHOOTING:
+//                //shootBalls();
+//                break;
 //        }
-
-        switch (shooterMode) {
-            case IDLE:
-                idleModeUpdate();
-                break;
-            case COLLECTING:
-                collectingModeUpdate();
-                break;
-            case SHOOTING:
-                shootBalls();
-                break;
-        }
-
-        setShooterPower(targetVelocity);
-    }
+//    }
 
     private void idleModeUpdate() {
         reachedReadyToShoot = false;
-        collector.setPower(true, COLLECTOR_LOW_POWER);
+        //collector.setPower(true, COLLECTOR_LOW_POWER);
     }
 
-    private void collectingModeUpdate() {
-        reachedReadyToShoot = false;
-        collector.setPower(true, COLLECTOR_HIGH_POWER);
-    }
+//    private void collectingModeUpdate() {
+//        reachedReadyToShoot = false;
+//        collector.setPower(true, COLLECTOR_HIGH_POWER);
+//    }
 
     public void ejectBalls() {
         reachedReadyToShoot = false;
-        collector.setPower(false, COLLECTOR_HIGH_POWER);
-    }
-
-    private double calculateHingePowerForAngle(double currentArmAngleDegrees, double goalArmAngleDegrees) {
-        double clippedGoalArmAngleDegrees = Range.clip(goalArmAngleDegrees, MIN_ANGLE_DEG, MAX_ANGLE_DEG);
-
-        // TODO: Want to try doing it this way too:
-        double error = clippedGoalArmAngleDegrees - currentArmAngleDegrees;
-        double kP = 0.08;
-        double kG = 0.3; // Tuning parameter for gravity compensation
-
-        // Angle is relative to ground (90° = horizontal)
-        double feedForward = kG * Math.cos(Math.toRadians(currentArmAngleDegrees));
-        double power = (error * kP) + feedForward;
-        return Range.clip(power, -1.0, 1.0);
+        //collector.setPower(false, COLLECTOR_HIGH_POWER);
     }
 
     public ShooterMode getShooterMode() {
@@ -125,12 +103,19 @@ public class Shooter {
         this.shooterMode = shooterMode;
     }
 
-    public void shootingMode() {
-        this.shooterMode = ShooterMode.SHOOTING;
+    public void setShooterPower(double power) {
+        leftMotor.setPower(power);
+        rightMotor.setPower(power);
     }
 
-    public void idleMode() {
-        this.shooterMode = ShooterMode.IDLE;
+    public void setShooterDirection() {
+        if (shooterMode == ShooterMode.IDLE) {
+            leftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+            rightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        } else if (shooterMode == ShooterMode.SHOOTING) {
+            leftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+            rightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        }
     }
 
     public boolean readyToShoot() {
@@ -139,25 +124,20 @@ public class Shooter {
                 atSpeed()) || manualReadyToShoot;
     }
 
-    public void setShooterPower(double power) {
-        leftMotor.setPower(power);
-        rightMotor.setPower(power);
-    }
-
     public void stop() {
         targetVelocity = 0;
         leftMotor.setPower(0);
         rightMotor.setPower(0);
     }
 
-    public void shootBalls() {
-        if (readyToShoot()) {
-            collector.setPower(true, COLLECTOR_HIGH_POWER);
-        } else {
-            collector.setPower(true, COLLECTOR_LOW_POWER);
-        }
-        reachedReadyToShoot = true;
-    }
+//    public void shootBalls() {
+//        if (readyToShoot()) {
+//            collector.setPower(true, COLLECTOR_HIGH_POWER);
+//        } else {
+//            collector.setPower(true, COLLECTOR_LOW_POWER);
+//        }
+//        reachedReadyToShoot = true;
+//    }
 
     public void resetTargetVelocity() {
         targetVelocity = 0;
