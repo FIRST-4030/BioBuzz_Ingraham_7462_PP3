@@ -14,59 +14,25 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.ControlHub;
-import org.firstinspires.ftc.teamcode.UtilOpModes.Poses;
+import org.firstinspires.ftc.teamcode.Poses;
 
 
 @Autonomous
-public class PP3Auto extends OpMode {
+public class PP3AudienceSideAuto extends OpMode {
     ControlHub controlHub;
     private Follower follower;
     //bank of poses
     Poses poses = new Poses();
-    private Path startToHive(){
-        return line(
-                poses.autoStartPos,
-                poses.shootPos
-        ).linear(
-                poses.autoStartPos,
-                poses.shootPos
-        );
-    }
-    private Path hiveToGarden(){
-        return line(
-                poses.shootPos,
-                //poses.collectConPose,
-                poses.collectPos
-        ).linear(
-                poses.shootPos,
-                poses.collectPos
-        );
-    }
-    private Path gardenToHive(){
-        return line(
-                poses.collectPos,
-                poses.shootPos
-        ).linear(
-                poses.collectPos,
-                poses.shootPos
-        );
-    }
-    private Path hiveToPark(){
-        return curve(
-                poses.shootPos,
-                poses.parkContPose,
-                poses.parkPos
-        ).linear(
-                poses.shootPos,
-                poses.parkContPose
-        );
-    }
+    private Path AudienceStartToShoot(){return line(poses.audienceStartPos, poses.audienceShootPos).linear(poses.audienceStartPos, poses.audienceShootPos);}
+    private Path AudienceShootToCollect(){return curve(poses.audienceShootPos, poses.audienceCollectContPose, poses.audienceCollectPos).linear(poses.audienceShootPos, poses.audienceCollectPos);}
+    private Path CollectToShoot(){return line(poses.audienceCollectPos, poses.audienceShootPos).linear(poses.audienceCollectPos, poses.audienceShootPos);}
+    private Path ShootToPark(){return curve(poses.audienceShootPos, poses.audienceParkContPose, poses.audienceParkPos).linear(poses.audienceShootPos, poses.audienceParkPos);}
     private Command autoRoutine(){
         return sequential(
-                follow(follower, startToHive()),
-//                follow(follower, hiveToGarden()),
-//                follow(follower, gardenToHive()),
-                follow(follower, hiveToPark())
+                follow(follower, AudienceStartToShoot()),
+                follow(follower, AudienceShootToCollect()),
+                follow(follower, CollectToShoot()),
+                follow(follower, ShootToPark())
         );
     }
     @Override
@@ -80,7 +46,7 @@ public class PP3Auto extends OpMode {
         follower = controlHub.getRobotSpecificPedroConstants();
 
         //sets pose to "start"
-        follower.setPose(poses.autoStartPos);
+        follower.setPose(poses.audienceStartPos);
         follower.update();
     }
     @Override
