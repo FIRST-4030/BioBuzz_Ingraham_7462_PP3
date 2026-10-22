@@ -37,4 +37,21 @@ public class Poses {
     //worst case
     public final Pose parkNoHeading = poseFactory.of(9, 94, FORWARD);
     public final Pose zero = poseFactory.of(0,0, FORWARD);
+
+    //scoring side
+    public final Pose scoringBlueStartPos = poseFactory.of(70, 5, FORWARD);
+    public final Pose secondLocPos = poseFactory.of(70, 20, FORWARD);
+    public final Pose scoringBlueShootPos = poseFactory.of(130, 20, FORWARD);
+
+    public final Pose scoringBlueCollectContPose = poseFactory.of(144-35, 144-10 , FORWARD);
+    public final Pose scoringBlueCollectPos = poseFactory.of(144-13, 144-10, FORWARD + 90);
+
+    public final Pose scoringParkContPose = poseFactory.of(144-20, 144-49 , FORWARD);
+    public final Pose scoringParkPos = poseFactory.of(144-9, 144-94, FORWARD - 90);
+
+
+
+    //scoring blue
+
+
 }

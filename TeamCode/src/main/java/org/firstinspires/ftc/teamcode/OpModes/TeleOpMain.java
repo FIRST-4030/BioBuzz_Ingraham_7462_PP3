@@ -54,7 +54,8 @@ public class TeleOpMain extends OpMode {
         collector.setCollectorPower();
         shooter.setShooterMode(Shooter.ShooterMode.IDLE);
         shooter.setShooterDirection();
-        shooter.setShooterPower(shooter.SHOOTER_IDLE_POWER);
+        //shooter.setShooterLowPower(0.2);
+        shooter.setShooterPower(shooter.getShooterLowPower());
 
         limelight.lookForBestAimingPipeline();
     }
@@ -70,7 +71,7 @@ public class TeleOpMain extends OpMode {
                 collector.setCollectorPower();
                 shooter.setShooterMode(Shooter.ShooterMode.IDLE);
                 shooter.setShooterDirection();
-                shooter.setShooterPower(shooter.SHOOTER_IDLE_POWER);
+                shooter.setShooterPower(shooter.getShooterLowPower());
                 chassis.drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
                 break;
             case COLLECTING:
@@ -79,12 +80,12 @@ public class TeleOpMain extends OpMode {
                 collector.setCollectorPower();
                 shooter.setShooterMode(Shooter.ShooterMode.IDLE);
                 shooter.setShooterDirection();
-                shooter.setShooterPower(shooter.SHOOTER_IDLE_POWER);
+                shooter.setShooterPower(shooter.getShooterLowPower());
                 chassis.drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
                 break;
             case SHOOTING:
                 limelight.lookForBestAimingPipeline();
-                shooter.setShooterPower(0);
+                shooter.stop();
                 if (shooter.manualReadyToShoot) {
                     //hasReachedReadyToShoot()
                     collector.setCollectorSpeed(Collector.COLLECTOR_SPEED.COLLECT);
@@ -92,7 +93,7 @@ public class TeleOpMain extends OpMode {
                     collector.setCollectorPower();
                     shooter.setShooterMode(Shooter.ShooterMode.SHOOTING);
                     shooter.setShooterDirection();
-                    shooter.setShooterPower(0.9);
+                    shooter.setShooterPower(shooter.getShootPower());
                     chassis.lockedOnDrive(-gamepad1.left_stick_y, gamepad1.left_stick_x, limelight);
                 } else {
                     collector.setCollectorSpeed(Collector.COLLECTOR_SPEED.IDLE);
@@ -100,7 +101,7 @@ public class TeleOpMain extends OpMode {
                     collector.setCollectorPower();
                     shooter.setShooterMode(Shooter.ShooterMode.SHOOTING);
                     shooter.setShooterDirection();
-                    shooter.setShooterPower(0.9);
+                    shooter.setShooterPower(shooter.getShootPower());
                     chassis.drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
                 }
                 break;
@@ -109,6 +110,7 @@ public class TeleOpMain extends OpMode {
                 break;
         }
 
+        telemetry.addData("Shooter Power", shooter.getShootPower());
         handleTelemetry();
     }
 
@@ -117,7 +119,13 @@ public class TeleOpMain extends OpMode {
         if (gamepad1.right_trigger_pressed) {
             runMode = RunMode.SHOOTING;
             telemetry.addLine("RunMode: SHOOTING");
-        } else if (gamepad1.left_trigger_pressed) {
+        }
+//        else if (gamepad1.left_trigger < 0.5 && gamepad1.left_trigger >= 0.1) {
+//            shooter.stop();
+//        }
+
+
+        else if (gamepad1.left_trigger_pressed) {
             runMode = RunMode.COLLECTING;
             telemetry.addLine("RunMode: COLLECTING");
         } else {
@@ -138,18 +146,24 @@ public class TeleOpMain extends OpMode {
         } else if (gamepad1.aWasReleased()) {
             shooter.manualReadyToShoot = false;
         }
-//
-//        if (gamepad1.dpadUpWasPressed()) {
-//            shooter.tempShootPower += 0.05;
-//        } else if (gamepad1.dpadDownWasPressed()) {
-//            shooter.tempShootPower -= 0.05;
+
+        if (gamepad1.dpadUpWasPressed()) {
+            shooter.setShootPower(0.1);
+        } else if (gamepad1.dpadDownWasPressed()) {
+            shooter.setShootPower(-0.1);
+        }
+
+//        if (gamepad1.bWasPressed()) {
+//            shooter.setShooterLowPower(0.3);
+//        } else if (gamepad1.bWasReleased()) {
+//            shooter.setShooterLowPower(-0.3);
 //        }
     }
 
     public void handleTelemetry() {
         //telemetry.addLine("LB: Idle, RB: Collecting, RT: Aiming");
         //telemetry.addLine("Dpad: Up: Faster shooter, DOWN: Slower shooter");
-        telemetry.addData("Shooter velocity", shooter.tempShootPower);
+        //telemetry.addData("Shooter velocity", shooter.getShootPower());
         if (!(Blackboard.getAlliance() == Blackboard.Alliance.RED || Blackboard.getAlliance() == Blackboard.Alliance.BLUE)) {
             telemetry.addLine("WARNING: ALLIANCE UNSET! You should re-init!");
         } else {
@@ -161,8 +175,8 @@ public class TeleOpMain extends OpMode {
 
         telemetry.addLine();
 
-        telemetry.addData("Pipeline", limelight.getCurrentPipelineName());
-        telemetry.addData("MS since pipeline switch", limelight.getTimeSinceLastPipelineSwitch().milliseconds());
+        //telemetry.addData("Pipeline", limelight.getCurrentPipelineName());
+        //telemetry.addData("MS since pipeline switch", limelight.getTimeSinceLastPipelineSwitch().milliseconds());
 
         telemetry.addLine();
 

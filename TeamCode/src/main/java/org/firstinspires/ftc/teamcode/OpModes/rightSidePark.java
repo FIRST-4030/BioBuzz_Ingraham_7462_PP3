@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.OpModes;
 
+import static com.pedropathing.api.Paths.curve;
 import static com.pedropathing.api.Paths.line;
 import static com.pedropathing.ivy.Scheduler.schedule;
 import static com.pedropathing.ivy.groups.Groups.sequential;
@@ -15,15 +16,17 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.teamcode.ControlHub;
 import org.firstinspires.ftc.teamcode.Poses;
 
-@Autonomous(name = "ScoringSideAuto")
-public class ScoringSideAuto extends OpMode {
+@Autonomous(name = "RightSideParkAuto")
+public class rightSidePark extends OpMode {
     ControlHub controlHub;
     private Follower follower;
     //bank of poses
     Poses poses = new Poses();
-
-    private Path StartToEnd() {
-        return line(poses.testStart, poses.testMid).linear(poses.testStart, poses.testMid);
+    private Path AudienceStartToShoot() {
+        return line(poses.scoringBlueStartPos, poses.secondLocPos).linear(poses.scoringBlueStartPos, poses.secondLocPos);
+    }
+    private Path SecondSpot(){
+        return line(poses.secondLocPos, poses.scoringBlueShootPos).linear(poses.secondLocPos, poses.scoringBlueShootPos);
     }
 
     @Override
@@ -32,11 +35,10 @@ public class ScoringSideAuto extends OpMode {
 
         //Reset movements
         Scheduler.reset();
-        //initializes follower
         follower = controlHub.getRobotSpecificPedroConstants();
 
         //sets pose to "start"
-        follower.setPose(poses.testStart);
+        follower.setPose(poses.audienceStartPos);
         follower.update();
     }
     @Override
@@ -52,7 +54,8 @@ public class ScoringSideAuto extends OpMode {
 
     private Command autoRoutine(){
         return sequential(
-                follow(follower, StartToEnd())
+                follow(follower, AudienceStartToShoot()),
+                follow(follower, SecondSpot())
         );
     }
 }

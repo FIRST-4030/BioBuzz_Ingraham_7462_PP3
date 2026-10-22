@@ -1,12 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
@@ -29,6 +26,7 @@ public class Shooter {
 
     public double targetVelocity = 0;
     public double SHOOTER_IDLE_POWER = 0.2;
+    private double shootPower = 0.9;
 //    public Flywheel flipperFlywheel;
     Limelight limelight;
     Collector collector;
@@ -55,11 +53,13 @@ public class Shooter {
         leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         leftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);  // WITH OUT!
         leftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        //leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         rightMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "rightShooter");
         rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);  // WITH OUT!
         rightMotor.setDirection(DcMotor.Direction.FORWARD);
+        //leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         this.limelight = limelight;
     }
@@ -116,6 +116,34 @@ public class Shooter {
             leftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
             rightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         }
+    }
+
+    public void setShootPower(double power) {
+        if (getShootPower() + power > 1) {
+            this.shootPower = 1;
+        } else if (getShootPower() + power < 0) {
+            this.shootPower = 0;
+        } else {
+            this.shootPower = getShootPower() + power;
+        }
+    }
+
+    public double getShootPower() {
+        return shootPower;
+    }
+
+//    public void setShooterLowPower(double power) {
+//        if (getShooterLowPower() + power > 0.5) {
+//            this.SHOOTER_IDLE_POWER = 0.5;
+//        } else if (getShooterLowPower() + power < 0) {
+//            this.SHOOTER_IDLE_POWER = 0;
+//        } else {
+//            this.SHOOTER_IDLE_POWER = getShootPower() + power;
+//        }
+//    }
+
+    public double getShooterLowPower() {
+        return SHOOTER_IDLE_POWER;
     }
 
     public boolean readyToShoot() {
