@@ -3,10 +3,11 @@ package org.firstinspires.ftc.teamcode.OpModes;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.generalUtilities.Blackboard;
 import org.firstinspires.ftc.teamcode.Collector;
-import org.firstinspires.ftc.teamcode.Shooter;
+import org.firstinspires.ftc.teamcode.BiobuzzShooter;
 import org.firstinspires.ftc.teamcode.Chassis;
 import org.firstinspires.ftc.teamcode.ControlHub;
 import org.firstinspires.ftc.teamcode.Limelight;
@@ -19,14 +20,15 @@ public class TeleOpMain extends OpMode {
     IMU imu;
     Limelight limelight;
     Chassis chassis;
-    Shooter shooter;
-
+    BiobuzzShooter shooter;
     Collector collector;
+    ElapsedTime shotTimer;
 
     public enum RunMode {
         IDLE,
         COLLECTING,
-        SHOOTING
+        SHOOTING,
+        BRAKING
     }
 
     public RunMode runMode = RunMode.IDLE;
@@ -39,7 +41,8 @@ public class TeleOpMain extends OpMode {
         limelight = new Limelight(hardwareMap);
         chassis = new Chassis(hardwareMap);
         collector = new Collector(hardwareMap);
-        shooter = new Shooter(hardwareMap, limelight);
+        shooter = new BiobuzzShooter(hardwareMap, limelight);
+        shotTimer = new ElapsedTime();
     }
 
     public void init_loop() {
@@ -52,7 +55,7 @@ public class TeleOpMain extends OpMode {
         collector.setCollectorSpeed(Collector.COLLECTOR_SPEED.IDLE);
         collector.collectingDirection();
         collector.setCollectorPower();
-        shooter.setShooterMode(Shooter.ShooterMode.IDLE);
+        shooter.setShooterMode(BiobuzzShooter.ShooterMode.IDLE);
         shooter.setShooterDirection();
         //shooter.setShooterLowPower(0.2);
         shooter.setShooterPower(shooter.getShooterLowPower());
@@ -69,7 +72,7 @@ public class TeleOpMain extends OpMode {
                 collector.setCollectorSpeed(Collector.COLLECTOR_SPEED.IDLE);
                 collector.collectingDirection();
                 collector.setCollectorPower();
-                shooter.setShooterMode(Shooter.ShooterMode.IDLE);
+                shooter.setShooterMode(BiobuzzShooter.ShooterMode.IDLE);
                 shooter.setShooterDirection();
                 shooter.setShooterPower(shooter.getShooterLowPower());
                 chassis.drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
@@ -78,20 +81,19 @@ public class TeleOpMain extends OpMode {
                 collector.setCollectorSpeed(Collector.COLLECTOR_SPEED.COLLECT);
                 collector.collectingDirection();
                 collector.setCollectorPower();
-                shooter.setShooterMode(Shooter.ShooterMode.IDLE);
+                shooter.setShooterMode(BiobuzzShooter.ShooterMode.IDLE);
                 shooter.setShooterDirection();
                 shooter.setShooterPower(shooter.getShooterLowPower());
                 chassis.drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
                 break;
             case SHOOTING:
                 limelight.lookForBestAimingPipeline();
-                shooter.stop();
                 if (shooter.manualReadyToShoot) {
                     //hasReachedReadyToShoot()
                     collector.setCollectorSpeed(Collector.COLLECTOR_SPEED.COLLECT);
                     collector.collectingDirection();
                     collector.setCollectorPower();
-                    shooter.setShooterMode(Shooter.ShooterMode.SHOOTING);
+                    shooter.setShooterMode(BiobuzzShooter.ShooterMode.SHOOTING);
                     shooter.setShooterDirection();
                     shooter.setShooterPower(shooter.getShootPower());
                     chassis.lockedOnDrive(-gamepad1.left_stick_y, gamepad1.left_stick_x, limelight);
@@ -99,7 +101,7 @@ public class TeleOpMain extends OpMode {
                     collector.setCollectorSpeed(Collector.COLLECTOR_SPEED.IDLE);
                     collector.collectingDirection();
                     collector.setCollectorPower();
-                    shooter.setShooterMode(Shooter.ShooterMode.SHOOTING);
+                    shooter.setShooterMode(BiobuzzShooter.ShooterMode.SHOOTING);
                     shooter.setShooterDirection();
                     shooter.setShooterPower(shooter.getShootPower());
                     chassis.drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
@@ -120,15 +122,13 @@ public class TeleOpMain extends OpMode {
             runMode = RunMode.SHOOTING;
             telemetry.addLine("RunMode: SHOOTING");
         }
-//        else if (gamepad1.left_trigger < 0.5 && gamepad1.left_trigger >= 0.1) {
-//            shooter.stop();
-//        }
-
 
         else if (gamepad1.left_trigger_pressed) {
             runMode = RunMode.COLLECTING;
             telemetry.addLine("RunMode: COLLECTING");
-        } else {
+        }
+
+        else {
             runMode = RunMode.IDLE;
             telemetry.addLine("RunMode: IDLE");
         }
@@ -148,9 +148,9 @@ public class TeleOpMain extends OpMode {
         }
 
         if (gamepad1.dpadUpWasPressed()) {
-            shooter.setShootPower(0.1);
+            shooter.setShootPower(0.05);
         } else if (gamepad1.dpadDownWasPressed()) {
-            shooter.setShootPower(-0.1);
+            shooter.setShootPower(-0.05);
         }
 
 //        if (gamepad1.bWasPressed()) {
@@ -159,6 +159,8 @@ public class TeleOpMain extends OpMode {
 //            shooter.setShooterLowPower(-0.3);
 //        }
     }
+
+    //public void
 
     public void handleTelemetry() {
         //telemetry.addLine("LB: Idle, RB: Collecting, RT: Aiming");

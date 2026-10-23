@@ -7,188 +7,109 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
+/**
+ * Shooter Class.  Implements a feed forward plus feed back control system
+ */
 public class Shooter {
+    private final DcMotorEx nectarShooter;
+    private final DcMotorEx pollenShooter;
 
-    DcMotorEx leftMotor;
-    DcMotorEx rightMotor;
+    // Kvelo is the feed forward term.  Tune first by adjusting until rotational velo target is met
+    private double Kvelo = 0.03; // power multiplier for rotations per second
 
-    // This class is mostly reworked from 8628's DECODE season "Shooter" class, and is intended as
-    // a general-purpose flywheel leftMotor controller for both our collector and shooter flywheels.
-
-    // These should be tuned per-flywheel ideally; but just defaults to the values from DECODE
-    public double KVelocity = 0.0243; // power multiplier for rotations per second
     // FeedBack term is Kp (proportional term)
-    // Set Kp to zero when tuning the KVelocity term!!
-    public double Kp = 0.3;
+    // Set Kp to zero when tuning the Kvelo term!!
+    private double Kp = 0.7;  // no gain in improvement when increasing beyond this
 
-    private static final double COUNTS_PER_REV = 28 ;  // REV HD Hex 1:1 leftMotor Encoder
-    private static final double errorMargin = 0.02;
+    private static final double   COUNTS_PER_REV = 28 ;  // REV HD Hex 1:1 Motor Encoder
 
-    public double targetVelocity = 0;
-    public double SHOOTER_IDLE_POWER = 0.2;
-    private double shootPower = 0.9;
-//    public Flywheel flipperFlywheel;
-    Limelight limelight;
-    Collector collector;
+    private double targetVelocity = 0;  // rotations per second (max is ~40)
+    private double veloPower = 0; // used for determining Kp
 
-    private boolean reachedReadyToShoot = false;
+    /**
+     * Shooter Constructor
+     * @param hardwareMap FTC harware map
+     * @param leftName  The config file name for the motor
+     * @param dir Direction Boolean
+     */
+    public Shooter(HardwareMap hardwareMap, String leftName, String rightName, Boolean dir) {
+        nectarShooter = (DcMotorEx) hardwareMap.get(DcMotor.class, leftName);
+        pollenShooter = (DcMotorEx) hardwareMap.get((DcMotor.class), rightName);
+        //shooter.setDirection(DcMotor.Direction.FORWARD);
+        nectarShooter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        nectarShooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        pollenShooter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        pollenShooter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        // WITH OUT!
+        setMotorDirection(dir);
 
-    public boolean manualReadyToShoot = false; // Last resort
-    // TODO: THIS IS TEMPORARY
-    public double tempShootPower = 1;
-
-    private static final double MIN_ANGLE_DEG = 56.0;
-    private static final double MAX_ANGLE_DEG = 140.0;
-
-    public enum ShooterMode {
-        IDLE,
-        SHOOTING
     }
 
-    private ShooterMode shooterMode = ShooterMode.IDLE;
-
-    public Shooter(HardwareMap hardwareMap, Limelight limelight) {
-
-        leftMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "leftShooter");
-        leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);  // WITH OUT!
-        leftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        //leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        rightMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "rightShooter");
-        rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);  // WITH OUT!
-        rightMotor.setDirection(DcMotor.Direction.FORWARD);
-        //leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        this.limelight = limelight;
+    /**
+     * overridePower method should be called in the main loop()
+     */
+    public void overridePower() {
+        double currentVelocity = pollenShooter.getVelocity(AngleUnit.DEGREES)/COUNTS_PER_REV;
+        double veloError = targetVelocity - currentVelocity;
+        // CONTROLLER:  feedfoward = Kvelo + feedback = Kpos
+        veloPower = veloError * Kp;
+        double setPower = targetVelocity * Kvelo + veloPower;
+        nectarShooter.setPower(setPower);
+        pollenShooter.setPower(setPower);
     }
-
-//    public void update() {
-////        if (!isPotentiometerConnected()) {
-////            shooterFlywheel.stop();
-////            return;
-////        }
-//
-//        switch (shooterMode) {
-//            case IDLE:
-//                idleModeUpdate();
-//                break;
-//            case SHOOTING:
-//                //shootBalls();
-//                break;
-//        }
-//    }
-
-    private void idleModeUpdate() {
-        reachedReadyToShoot = false;
-        //collector.setPower(true, COLLECTOR_LOW_POWER);
-    }
-
-//    private void collectingModeUpdate() {
-//        reachedReadyToShoot = false;
-//        collector.setPower(true, COLLECTOR_HIGH_POWER);
-//    }
-
-    public void ejectBalls() {
-        reachedReadyToShoot = false;
-        //collector.setPower(false, COLLECTOR_HIGH_POWER);
-    }
-
-    public ShooterMode getShooterMode() {
-        return shooterMode;
-    }
-
-    public void setShooterMode(ShooterMode shooterMode) {
-        this.shooterMode = shooterMode;
-    }
-
-    public void setShooterPower(double power) {
-        leftMotor.setPower(power);
-        rightMotor.setPower(power);
-    }
-
-    public void setShooterDirection() {
-        if (shooterMode == ShooterMode.IDLE) {
-            leftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-            rightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        } else if (shooterMode == ShooterMode.SHOOTING) {
-            leftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-            rightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-        }
-    }
-
-    public void setShootPower(double power) {
-        if (getShootPower() + power > 1) {
-            this.shootPower = 1;
-        } else if (getShootPower() + power < 0) {
-            this.shootPower = 0;
+    private void setMotorDirection(Boolean dir) {
+        //True = forward, false = backwards
+        if (dir) {
+            nectarShooter.setDirection(DcMotor.Direction.REVERSE);
+            pollenShooter.setDirection(DcMotor.Direction.FORWARD);
         } else {
-            this.shootPower = getShootPower() + power;
+            nectarShooter.setDirection(DcMotor.Direction.FORWARD);
+            pollenShooter.setDirection(DcMotor.Direction.REVERSE);
         }
     }
 
-    public double getShootPower() {
-        return shootPower;
+    /**
+     * Set the Control terms for the flywheel controller
+     * @param Kp Proportional feedback term
+     * @param Kvelo Feed Forward Velocity term
+     */
+    public void setControllerValues(double Kp, double Kvelo) {
+        this.Kp = Kp;
+        this.Kvelo = Kvelo;
     }
 
-//    public void setShooterLowPower(double power) {
-//        if (getShooterLowPower() + power > 0.5) {
-//            this.SHOOTER_IDLE_POWER = 0.5;
-//        } else if (getShooterLowPower() + power < 0) {
-//            this.SHOOTER_IDLE_POWER = 0;
-//        } else {
-//            this.SHOOTER_IDLE_POWER = getShootPower() + power;
-//        }
-//    }
-
-    public double getShooterLowPower() {
-        return SHOOTER_IDLE_POWER;
-    }
-
-    public boolean readyToShoot() {
-        return (shooterMode == ShooterMode.SHOOTING &&
-                limelight.isOnTarget() &&
-                atSpeed()) || manualReadyToShoot;
-    }
-
-    public void stop() {
-        targetVelocity = 0;
-        leftMotor.setPower(0);
-        rightMotor.setPower(0);
-    }
-
-//    public void shootBalls() {
-//        if (readyToShoot()) {
-//            collector.setPower(true, COLLECTOR_HIGH_POWER);
-//        } else {
-//            collector.setPower(true, COLLECTOR_LOW_POWER);
-//        }
-//        reachedReadyToShoot = true;
-//    }
-
-    public void resetTargetVelocity() {
-        targetVelocity = 0;
-    }
-
-    public void setTargetVelocity(double velocity) {
-        this.targetVelocity = velocity;
-    }
-
-    public double getPower() {
-        return leftMotor.getPower();
-    }
-
+    public void setTargetVelocity(double velo) { this.targetVelocity = velo;  }
+    public double getPower() { return pollenShooter.getPower();   }
+    public double getVeloPower() { return veloPower;}
     public double getVelocity() {
-        return leftMotor.getVelocity(AngleUnit.DEGREES) / COUNTS_PER_REV;
+        return pollenShooter.getVelocity(AngleUnit.DEGREES)/COUNTS_PER_REV;
     }
 
+    /**
+     * atSpeed method lets one know if the motor is running at the target speed
+     * @return Boolean True is at speed
+     */
     public boolean atSpeed() {
-        return (1 - errorMargin) * targetVelocity < this.getVelocity() &&
-                this.getVelocity() < (1 + errorMargin) * targetVelocity;
+        return 0.98 * targetVelocity < this.getVelocity() && this.getVelocity() < 1.02 * targetVelocity;
     }
 
-    public boolean hasReachedReadyToShoot() {
-        return reachedReadyToShoot;
+    /**
+     * getShooterVelo method computes velocity from range using function based on shooting experiments
+     * @param limelight Limelight pointer
+     * @return Velocity that shooter should run at for found distance
+     */
+    public double getShooterVelo(Limelight limelight) {
+
+        double range = limelight.getRange();
+        double poly = 19.0 + 0.125 * range;
+        if (range < 80.0) poly = 29.0;
+
+        return poly;
     }
+
+    public void setPower(double power) {
+        nectarShooter.setPower(power);
+        pollenShooter.setPower(power);
+    }
+    public double getTargetVelocity() {return targetVelocity;}
 }

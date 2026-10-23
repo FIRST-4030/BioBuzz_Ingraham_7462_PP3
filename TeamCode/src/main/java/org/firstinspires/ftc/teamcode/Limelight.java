@@ -22,6 +22,10 @@ public class Limelight {
     private LLResult internalLatestResult;
     private LLStatus internalLatestStatus;
 
+    private final double camera_height = 0;
+    private final double target_height = 0;
+    private double goalRange = 1;
+
     public enum HiveCell {
         RED_SCORING,
         RED_AUDIENCE,
@@ -200,6 +204,11 @@ public class Limelight {
         } else {
             return 0;
         }
+    }
+
+    public double getRange() {
+        //goalRange = (target_height - camera_height) / (Math.tan(Math.toRadians(ty) + cameraAngle));
+        return goalRange;
     }
 
     public void setPipeline(int pipelineID) {
