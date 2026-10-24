@@ -14,11 +14,13 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 //@Disabled //comment this out when ready to add to android phone
 public class FlyWheelTuner extends OpMode {
     Shooter shooter;
+    Collector collector;
 
-    private double Kvelo = 0.001;  // modified while opmode runs
+    private double Kvelo = -0.0004;  // modified while opmode runs
 
-    private double Kp = 0.5;    // modified while opmode runs
-    private static final double IDLEPOWER = 25;
+    private double Kp = -0.006;    // modified while opmode runs
+    private double IDLE_VELOCITY = -1500; //RPM
+    //static final
     private double power = 0.2;
 
     FlyWheelTuner.Datalog datalog = new FlyWheelTuner.Datalog("FlywheelLog");
@@ -28,16 +30,8 @@ public class FlyWheelTuner extends OpMode {
         shooter = new Shooter(hardwareMap, "nectarShooter", "pollenShooter", true);
         shooter.setControllerValues(Kp, Kvelo);
 
-        /*
-        The telemetry.setMsTransmissionInterval() method in the FIRST Tech Challenge (FTC) SDK controls
-        how frequently telemetry data is sent from the Robot Controller to the Driver Station
-        250 (milliseconds) is the default value and a good general-purpose interval that balances updates with bandwidth usage.
-        100 to 50 (milliseconds) are useful for debugging or operations requiring faster updates (e.g., vision processing, rapid sensor changes).
-        A lower interval provides a more real-time view of data on the Driver Station but increases communication bandwidth usage,
-        which might impact other network-dependent tasks (like vision processing).
-         */
-        telemetry.setMsTransmissionInterval(50);
-    }
+        collector = new Collector(hardwareMap);
+     }
 
     //we are using the methods from OpMode and @Override is so that we can write our own stuff for this method
     @Override
@@ -51,7 +45,7 @@ public class FlyWheelTuner extends OpMode {
         if (gamepad1.dpadUpWasPressed()) power += 0.01;
         else if (gamepad1.dpadDownWasPressed()) power -= 0.01;
 
-        shooter.setControllerValues(Kp, Kvelo);
+        //shooter.setControllerValues(Kp, Kvelo);
         shooter.overridePower(); // shooter motor speed controller
 
         telemetry.addLine("Tune the Kvelo term now.");
@@ -60,14 +54,14 @@ public class FlyWheelTuner extends OpMode {
 
         shooter.setPower(power);
         telemetry.addData("Shooter Speed"," %.1f", velocity);
-        telemetry.addData("Kvelo term (power/velocity)"," %.4f", Kvelo);
+        telemetry.addData("Kvelo term (power/velocity)"," %.6f", Kvelo);
 
         telemetry.update();
     }
 
     @Override
     public void start() {
-        shooter.setTargetVelocity(IDLEPOWER);
+        shooter.setTargetVelocity(IDLE_VELOCITY);
         shooter.setControllerValues(Kp, Kvelo);
     }
 
@@ -82,17 +76,27 @@ public class FlyWheelTuner extends OpMode {
 
         telemetry.addData("Kp term DPAD +UP -DOWN", Kp);
 
-        if (gamepad1.dpadUpWasPressed()) Kp += 0.1;
-        else if (gamepad1.dpadDownWasPressed()) Kp -= 0.1;
-        telemetry.addLine(String.format("Flywheel Target Velo %.1f ,Current Velo %.1f (mm)",
-                IDLEPOWER,shooter.getVelocity()));
+        if (gamepad1.dpadUpWasPressed()) Kp += 0.0001;
+        else if (gamepad1.dpadDownWasPressed()) Kp -= 0.0001;
+        telemetry.addLine(String.format("IDLE_VELOCITY Y and A, Velo %.1f ,Current Velo %.1f (mm)",
+                IDLE_VELOCITY,shooter.getVelocity()));
+        if (gamepad1.yWasReleased()) {
+            IDLE_VELOCITY += 100;
+        } else if (gamepad1.aWasReleased()) {
+            IDLE_VELOCITY -= 100;
+        }
+
+        collector.setCollectorSpeed(Collector.COLLECTOR_SPEED.COLLECT);
+        collector.setCollector();
+
         //telemetry.addData("Target velocity"," %.1f", IDLEPOWER);
         //telemetry.addData("shooter Current Velocity",String.format(" %.1f", shooter.getVelocity()));
         //telemetry.addData("Shooter Power"," %.3f", shooter.getPower());
-        telemetry.addData("Power from Kp term:"," %.3f", shooter.getVeloPower());
+        telemetry.addData("Power from Kp term:"," %.6f", shooter.getVeloPower());
 
         telemetry.update();
 
+        shooter.setTargetVelocity(IDLE_VELOCITY);
         shooter.setControllerValues(Kp, Kvelo);
         shooter.overridePower(); // shooter motor speed controller
 

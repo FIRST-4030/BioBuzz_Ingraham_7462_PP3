@@ -21,7 +21,7 @@ public class Shooter {
     // Set Kp to zero when tuning the Kvelo term!!
     private double Kp = 0.7;  // no gain in improvement when increasing beyond this
 
-    private static final double   COUNTS_PER_REV = 28 ;  // REV HD Hex 1:1 Motor Encoder
+    private static final double   GEAR_RATIO = 0.5;
 
     private double targetVelocity = 0;  // rotations per second (max is ~40)
     private double veloPower = 0; // used for determining Kp
@@ -37,7 +37,7 @@ public class Shooter {
         pollenShooter = (DcMotorEx) hardwareMap.get((DcMotor.class), rightName);
         //shooter.setDirection(DcMotor.Direction.FORWARD);
         nectarShooter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        nectarShooter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        nectarShooter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         pollenShooter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         pollenShooter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         // WITH OUT!
@@ -49,7 +49,7 @@ public class Shooter {
      * overridePower method should be called in the main loop()
      */
     public void overridePower() {
-        double currentVelocity = pollenShooter.getVelocity(AngleUnit.DEGREES)/COUNTS_PER_REV;
+        double currentVelocity = (pollenShooter.getVelocity(AngleUnit.DEGREES) * 60 / 360) * GEAR_RATIO * 100; //60 seconds, 360 degrees/rotation
         double veloError = targetVelocity - currentVelocity;
         // CONTROLLER:  feedfoward = Kvelo + feedback = Kpos
         veloPower = veloError * Kp;
@@ -82,7 +82,7 @@ public class Shooter {
     public double getPower() { return pollenShooter.getPower();   }
     public double getVeloPower() { return veloPower;}
     public double getVelocity() {
-        return pollenShooter.getVelocity(AngleUnit.DEGREES)/COUNTS_PER_REV;
+        return (pollenShooter.getVelocity(AngleUnit.DEGREES) * 60 / 360) * GEAR_RATIO * 100; //60 seconds, 360 degrees/rotation
     }
 
     /**

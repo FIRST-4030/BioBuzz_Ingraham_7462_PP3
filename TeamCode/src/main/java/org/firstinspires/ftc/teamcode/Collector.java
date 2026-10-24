@@ -31,22 +31,39 @@ public class Collector {
         collectorSpeed = speed;
     }
 
-    public void collectingDirection() {
-        if (collectorSpeed == COLLECTOR_SPEED.IDLE) {
-            collectorMotor.setDirection(FORWARD);
-        } else if (collectorSpeed == COLLECTOR_SPEED.COLLECT) {
-            collectorMotor.setDirection(FORWARD);
-        } else if (collectorSpeed == COLLECTOR_SPEED.REVERSED) {
-            collectorMotor.setDirection(REVERSE);
-        }
+    public COLLECTOR_SPEED getCollectorMode() {
+        return collectorSpeed;
     }
 
-    public void setCollectorPower() {
+//    public void collectingDirection() {
+//        if (collectorSpeed == COLLECTOR_SPEED.IDLE) {
+//            collectorMotor.setDirection(FORWARD);
+//        } else if (collectorSpeed == COLLECTOR_SPEED.COLLECT) {
+//            collectorMotor.setDirection(FORWARD);
+//        } else if (collectorSpeed == COLLECTOR_SPEED.REVERSED) {
+//            collectorMotor.setDirection(REVERSE);
+//        }
+//    }
+//
+//    public void setCollectorPower() {
+//        if (collectorSpeed == COLLECTOR_SPEED.IDLE) {
+//            collectorMotor.setPower(COLLECTOR_LOW_POWER);
+//        } else if (collectorSpeed == COLLECTOR_SPEED.COLLECT) {
+//            collectorMotor.setPower(COLLECTOR_HIGH_POWER);
+//        } else if (collectorSpeed == COLLECTOR_SPEED.REVERSED) {
+//            collectorMotor.setPower(COLLECTOR_HIGH_POWER);
+//        }
+//    }
+
+    public void setCollector() {
         if (collectorSpeed == COLLECTOR_SPEED.IDLE) {
+            collectorMotor.setDirection(FORWARD);
             collectorMotor.setPower(COLLECTOR_LOW_POWER);
         } else if (collectorSpeed == COLLECTOR_SPEED.COLLECT) {
+            collectorMotor.setDirection(FORWARD);
             collectorMotor.setPower(COLLECTOR_HIGH_POWER);
         } else if (collectorSpeed == COLLECTOR_SPEED.REVERSED) {
+            collectorMotor.setDirection(REVERSE);
             collectorMotor.setPower(COLLECTOR_HIGH_POWER);
         }
     }

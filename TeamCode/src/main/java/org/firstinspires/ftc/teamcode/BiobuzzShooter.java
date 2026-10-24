@@ -9,11 +9,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 public class BiobuzzShooter {
 
-    DcMotorEx leftMotor;
-    DcMotorEx rightMotor;
+    DcMotorEx nectarMotor;
+    DcMotorEx pollenMotor;
 
     // This class is mostly reworked from 8628's DECODE season "Shooter" class, and is intended as
-    // a general-purpose flywheel leftMotor controller for both our collector and shooter flywheels.
+    // a general-purpose flywheel nectarMotor controller for both our collector and shooter flywheels.
 
     // These should be tuned per-flywheel ideally; but just defaults to the values from DECODE
     public double KVelocity = 0.0243; // power multiplier for rotations per second
@@ -21,24 +21,22 @@ public class BiobuzzShooter {
     // Set Kp to zero when tuning the KVelocity term!!
     public double Kp = 0.3;
 
-    private static final double COUNTS_PER_REV = 28 ;  // REV HD Hex 1:1 leftMotor Encoder
+    //private static final double COUNTS_PER_REV = 28 ;  // REV HD Hex 1:1 nectarMotor Encoder
+    private static final double   GEAR_RATIO = 0.5; //
     private static final double errorMargin = 0.02;
 
     public double targetVelocity = 0;
     public double SHOOTER_IDLE_POWER = 0.2;
     private double shootPower = 0.9;
-//    public Flywheel flipperFlywheel;
     Limelight limelight;
-    Collector collector;
 
     private boolean reachedReadyToShoot = false;
 
     public boolean manualReadyToShoot = false; // Last resort
-    // TODO: THIS IS TEMPORARY
-    public double tempShootPower = 1;
 
-    private static final double MIN_ANGLE_DEG = 56.0;
-    private static final double MAX_ANGLE_DEG = 140.0;
+//    public double tempShootPower = 1;
+//    private static final double MIN_ANGLE_DEG = 56.0;
+//    private static final double MAX_ANGLE_DEG = 140.0;
 
     public enum ShooterMode {
         IDLE,
@@ -49,51 +47,28 @@ public class BiobuzzShooter {
 
     public BiobuzzShooter(HardwareMap hardwareMap, Limelight limelight) {
 
-        leftMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "nectarShooter");
-        leftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);  // WITH OUT!
-        leftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-        //leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        nectarMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "nectarShooter");
+        nectarMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        nectarMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);  // WITH OUT!
+        nectarMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        rightMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "pollenShooter");
-        rightMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);  // WITH OUT!
-        rightMotor.setDirection(DcMotor.Direction.FORWARD);
-        //leftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        pollenMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "pollenShooter");
+        pollenMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        pollenMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);  // WITH OUT!
+        pollenMotor.setDirection(DcMotor.Direction.FORWARD);
 
         this.limelight = limelight;
     }
 
-//    public void update() {
-////        if (!isPotentiometerConnected()) {
-////            shooterFlywheel.stop();
-////            return;
-////        }
-//
-//        switch (shooterMode) {
-//            case IDLE:
-//                idleModeUpdate();
-//                break;
-//            case SHOOTING:
-//                //shootBalls();
-//                break;
-//        }
-//    }
-
-    private void idleModeUpdate() {
-        reachedReadyToShoot = false;
-        //collector.setPower(true, COLLECTOR_LOW_POWER);
-    }
-
-//    private void collectingModeUpdate() {
+//    private void idleModeUpdate() {
 //        reachedReadyToShoot = false;
-//        collector.setPower(true, COLLECTOR_HIGH_POWER);
+//        //collector.setPower(true, COLLECTOR_LOW_POWER);
 //    }
-
-    public void ejectBalls() {
-        reachedReadyToShoot = false;
-        //collector.setPower(false, COLLECTOR_HIGH_POWER);
-    }
+//
+//    public void ejectBalls() {
+//        reachedReadyToShoot = false;
+//        //collector.setPower(false, COLLECTOR_HIGH_POWER);
+//    }
 
     public ShooterMode getShooterMode() {
         return shooterMode;
@@ -104,17 +79,17 @@ public class BiobuzzShooter {
     }
 
     public void setShooterPower(double power) {
-        leftMotor.setPower(power);
-        rightMotor.setPower(power);
+        nectarMotor.setPower(power);
+        pollenMotor.setPower(power);
     }
 
     public void setShooterDirection() {
         if (shooterMode == ShooterMode.IDLE) {
-            leftMotor.setDirection(DcMotorSimple.Direction.FORWARD);
-            rightMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+            nectarMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+            pollenMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         } else if (shooterMode == ShooterMode.SHOOTING) {
-            leftMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-            rightMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+            nectarMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+            pollenMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         }
     }
 
@@ -154,18 +129,9 @@ public class BiobuzzShooter {
 
     public void stop() {
         targetVelocity = 0;
-        leftMotor.setPower(0);
-        rightMotor.setPower(0);
+        nectarMotor.setPower(0);
+        pollenMotor.setPower(0);
     }
-
-//    public void shootBalls() {
-//        if (readyToShoot()) {
-//            collector.setPower(true, COLLECTOR_HIGH_POWER);
-//        } else {
-//            collector.setPower(true, COLLECTOR_LOW_POWER);
-//        }
-//        reachedReadyToShoot = true;
-//    }
 
     public void resetTargetVelocity() {
         targetVelocity = 0;
@@ -176,11 +142,11 @@ public class BiobuzzShooter {
     }
 
     public double getPower() {
-        return leftMotor.getPower();
+        return pollenMotor.getPower();
     }
 
     public double getVelocity() {
-        return leftMotor.getVelocity(AngleUnit.DEGREES) / COUNTS_PER_REV;
+        return (pollenMotor.getVelocity(AngleUnit.DEGREES) * 60 / 360) * GEAR_RATIO * 100; //60 seconds, 360 degrees/rotation
     }
 
     public boolean atSpeed() {
