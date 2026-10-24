@@ -28,7 +28,6 @@ public class TeleOpMain extends OpMode {
         IDLE,
         COLLECTING,
         SHOOTING,
-        BRAKING
     }
 
     public RunMode runMode = RunMode.IDLE;
@@ -52,11 +51,10 @@ public class TeleOpMain extends OpMode {
     }
 
     public void start() {
-        collector.setCollectorSpeed(Collector.COLLECTOR_SPEED.IDLE);
+        collector.setCollectorSpeed(Collector.CollectorMode.IDLE);
         collector.setCollector();
         shooter.setShooterMode(BiobuzzShooter.ShooterMode.IDLE);
         shooter.setShooterDirection();
-        //shooter.setShooterLowPower(0.2);
         shooter.setShooterPower(shooter.getShooterLowPower());
 
         limelight.lookForBestAimingPipeline();
@@ -68,7 +66,7 @@ public class TeleOpMain extends OpMode {
 
         switch (runMode) {
             case IDLE:
-                collector.setCollectorSpeed(Collector.COLLECTOR_SPEED.IDLE);
+                collector.setCollectorSpeed(Collector.CollectorMode.IDLE);
                 collector.setCollector();
                 shooter.setShooterMode(BiobuzzShooter.ShooterMode.IDLE);
                 shooter.setShooterDirection();
@@ -76,7 +74,7 @@ public class TeleOpMain extends OpMode {
                 chassis.drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
                 break;
             case COLLECTING:
-                collector.setCollectorSpeed(Collector.COLLECTOR_SPEED.COLLECT);
+                collector.setCollectorSpeed(Collector.CollectorMode.COLLECT);
                 collector.setCollector();
                 shooter.setShooterMode(BiobuzzShooter.ShooterMode.IDLE);
                 shooter.setShooterDirection();
@@ -86,15 +84,14 @@ public class TeleOpMain extends OpMode {
             case SHOOTING:
                 limelight.lookForBestAimingPipeline();
                 if (shooter.manualReadyToShoot) {
-                    //hasReachedReadyToShoot()
-                    collector.setCollectorSpeed(Collector.COLLECTOR_SPEED.COLLECT);
+                    collector.setCollectorSpeed(Collector.CollectorMode.COLLECT);
                     collector.setCollector();
                     shooter.setShooterMode(BiobuzzShooter.ShooterMode.SHOOTING);
                     shooter.setShooterDirection();
                     shooter.setShooterPower(shooter.getShootPower());
                     chassis.lockedOnDrive(-gamepad1.left_stick_y, gamepad1.left_stick_x, limelight);
                 } else {
-                    collector.setCollectorSpeed(Collector.COLLECTOR_SPEED.IDLE);
+                    collector.setCollectorSpeed(Collector.CollectorMode.IDLE);
                     collector.setCollector();
                     shooter.setShooterMode(BiobuzzShooter.ShooterMode.SHOOTING);
                     shooter.setShooterDirection();
@@ -135,12 +132,6 @@ public class TeleOpMain extends OpMode {
         } else if (gamepad1.dpadDownWasPressed()) {
             shooter.setShootPower(-0.05);
         }
-
-//        if (gamepad1.bWasPressed()) {
-//            shooter.setShooterLowPower(0.3);
-//        } else if (gamepad1.bWasReleased()) {
-//            shooter.setShooterLowPower(-0.3);
-//        }
     }
 
     public void handleTelemetry() {
@@ -164,8 +155,6 @@ public class TeleOpMain extends OpMode {
 //        telemetry.addData("Pipeline", limelight.getCurrentPipelineName());
 //        telemetry.addData("MS since pipeline switch", limelight.getTimeSinceLastPipelineSwitch().milliseconds());
 //
-//        telemetry.addLine();
-//
 //        if (limelight.resultHasGoodTargets()) {
 //            telemetry.addData("On target", limelight.isOnTarget());
 //            telemetry.addData("Tx", limelight.getXError());
@@ -174,7 +163,6 @@ public class TeleOpMain extends OpMode {
 //        } else {
 //            telemetry.addLine("No good targets visible");
 //        }
-
         telemetry.update();
     }
 }

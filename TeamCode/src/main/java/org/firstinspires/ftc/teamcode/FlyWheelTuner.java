@@ -86,7 +86,7 @@ public class FlyWheelTuner extends OpMode {
             IDLE_VELOCITY -= 100;
         }
 
-        collector.setCollectorSpeed(Collector.COLLECTOR_SPEED.COLLECT);
+        collector.setCollectorSpeed(Collector.CollectorMode.COLLECT);
         collector.setCollector();
 
         //telemetry.addData("Target velocity"," %.1f", IDLEPOWER);

@@ -16,7 +16,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import org.firstinspires.ftc.teamcode.ControlHub;
 import org.firstinspires.ftc.teamcode.Poses;
 
-@Autonomous(name = "RightSideParkAuto")
+@Autonomous(name = "Right Side Park")
 public class rightSidePark extends OpMode {
     ControlHub controlHub;
     private Follower follower;

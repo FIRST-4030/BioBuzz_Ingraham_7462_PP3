@@ -13,13 +13,13 @@ public class Collector {
 
     private static final double COLLECTOR_LOW_POWER = 0;
     private static final double COLLECTOR_HIGH_POWER = 1.0;
-    public enum COLLECTOR_SPEED {
+    public enum CollectorMode {
         IDLE,
         COLLECT,
         REVERSED
     }
 
-    COLLECTOR_SPEED collectorSpeed;
+    CollectorMode collectorSpeed;
     public Collector (HardwareMap hardwareMap) {
         collectorMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "collector");
         collectorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -27,42 +27,22 @@ public class Collector {
         collectorMotor.setDirection(FORWARD);
     }
 
-    public void setCollectorSpeed(COLLECTOR_SPEED speed) {
+    public void setCollectorSpeed(CollectorMode speed) {
         collectorSpeed = speed;
     }
 
-    public COLLECTOR_SPEED getCollectorMode() {
+    public CollectorMode getCollectorMode() {
         return collectorSpeed;
     }
 
-//    public void collectingDirection() {
-//        if (collectorSpeed == COLLECTOR_SPEED.IDLE) {
-//            collectorMotor.setDirection(FORWARD);
-//        } else if (collectorSpeed == COLLECTOR_SPEED.COLLECT) {
-//            collectorMotor.setDirection(FORWARD);
-//        } else if (collectorSpeed == COLLECTOR_SPEED.REVERSED) {
-//            collectorMotor.setDirection(REVERSE);
-//        }
-//    }
-//
-//    public void setCollectorPower() {
-//        if (collectorSpeed == COLLECTOR_SPEED.IDLE) {
-//            collectorMotor.setPower(COLLECTOR_LOW_POWER);
-//        } else if (collectorSpeed == COLLECTOR_SPEED.COLLECT) {
-//            collectorMotor.setPower(COLLECTOR_HIGH_POWER);
-//        } else if (collectorSpeed == COLLECTOR_SPEED.REVERSED) {
-//            collectorMotor.setPower(COLLECTOR_HIGH_POWER);
-//        }
-//    }
-
     public void setCollector() {
-        if (collectorSpeed == COLLECTOR_SPEED.IDLE) {
+        if (collectorSpeed == CollectorMode.IDLE) {
             collectorMotor.setDirection(FORWARD);
             collectorMotor.setPower(COLLECTOR_LOW_POWER);
-        } else if (collectorSpeed == COLLECTOR_SPEED.COLLECT) {
+        } else if (collectorSpeed == CollectorMode.COLLECT) {
             collectorMotor.setDirection(FORWARD);
             collectorMotor.setPower(COLLECTOR_HIGH_POWER);
-        } else if (collectorSpeed == COLLECTOR_SPEED.REVERSED) {
+        } else if (collectorSpeed == CollectorMode.REVERSED) {
             collectorMotor.setDirection(REVERSE);
             collectorMotor.setPower(COLLECTOR_HIGH_POWER);
         }

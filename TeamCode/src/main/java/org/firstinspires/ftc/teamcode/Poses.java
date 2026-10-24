@@ -43,7 +43,7 @@ public class Poses {
 
     //right side park
     public final Pose rightStartPos = poseFactory.of(78, ROBOT_SIZE, FORWARD);
-    public final Pose shootIG = poseFactory.of(82, 20, FORWARD);
+    public final Pose shootIG = poseFactory.of(82, 30, FORWARD);
     public final Pose preParkPos = poseFactory.of(144 - ROBOT_SIZE, ROBOT_SIZE, FORWARD);
     public final Pose RSParkPos = poseFactory.of(144 - ROBOT_SIZE, 30, FORWARD);
 

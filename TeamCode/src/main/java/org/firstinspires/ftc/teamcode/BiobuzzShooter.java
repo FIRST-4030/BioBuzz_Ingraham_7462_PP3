@@ -12,17 +12,13 @@ public class BiobuzzShooter {
     DcMotorEx nectarMotor;
     DcMotorEx pollenMotor;
 
-    // This class is mostly reworked from 8628's DECODE season "Shooter" class, and is intended as
-    // a general-purpose flywheel nectarMotor controller for both our collector and shooter flywheels.
-
-    // These should be tuned per-flywheel ideally; but just defaults to the values from DECODE
     public double KVelocity = 0.0243; // power multiplier for rotations per second
     // FeedBack term is Kp (proportional term)
-    // Set Kp to zero when tuning the KVelocity term!!
-    public double Kp = 0.3;
+
+    public double Kp = 0.3; //INPUT NEW VALUES FROM TUNER
 
     //private static final double COUNTS_PER_REV = 28 ;  // REV HD Hex 1:1 nectarMotor Encoder
-    private static final double   GEAR_RATIO = 0.5; //
+    private static final double GEAR_RATIO = 0.5;
     private static final double errorMargin = 0.02;
 
     public double targetVelocity = 0;
@@ -32,11 +28,7 @@ public class BiobuzzShooter {
 
     private boolean reachedReadyToShoot = false;
 
-    public boolean manualReadyToShoot = false; // Last resort
-
-//    public double tempShootPower = 1;
-//    private static final double MIN_ANGLE_DEG = 56.0;
-//    private static final double MAX_ANGLE_DEG = 140.0;
+    public boolean manualReadyToShoot = false;
 
     public enum ShooterMode {
         IDLE,
@@ -59,16 +51,6 @@ public class BiobuzzShooter {
 
         this.limelight = limelight;
     }
-
-//    private void idleModeUpdate() {
-//        reachedReadyToShoot = false;
-//        //collector.setPower(true, COLLECTOR_LOW_POWER);
-//    }
-//
-//    public void ejectBalls() {
-//        reachedReadyToShoot = false;
-//        //collector.setPower(false, COLLECTOR_HIGH_POWER);
-//    }
 
     public ShooterMode getShooterMode() {
         return shooterMode;
