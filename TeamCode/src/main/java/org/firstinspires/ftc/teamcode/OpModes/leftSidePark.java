@@ -35,6 +35,10 @@ public class leftSidePark extends OpMode {
         return curve(poses.audienceShootPos, poses.audienceParkContPose, poses.audienceParkPos).linear(poses.audienceShootPos, poses.audienceParkPos);
     }
 
+    private Path startToPark(){
+        return curve(poses.audienceStartPos, poses.audienceParkContPose, poses.audienceParkPos).linear(poses.audienceStartPos, poses.audienceParkPos);
+    }
+
     @Override
     public void init() {
         controlHub = new ControlHub(hardwareMap);
@@ -49,7 +53,7 @@ public class leftSidePark extends OpMode {
     }
     @Override
     public void start() {
-        schedule(autoRoutine());
+        schedule(simplifiedRout());
     }
 
     @Override
@@ -64,6 +68,11 @@ public class leftSidePark extends OpMode {
                 follow(follower, AudienceShootToCollect()),
                 follow(follower, CollectToShoot()),
                 follow(follower, ShootToPark())
+        );
+    }
+    private Command simplifiedRout(){
+        return sequential(
+            follow(follower, startToPark())
         );
     }
 }

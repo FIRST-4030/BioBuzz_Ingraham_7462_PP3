@@ -22,11 +22,14 @@ public class rightSidePark extends OpMode {
     private Follower follower;
     //bank of poses
     Poses poses = new Poses();
-    private Path AudienceStartToShoot() {
-        return line(poses.scoringBlueStartPos, poses.secondLocPos).linear(poses.scoringBlueStartPos, poses.secondLocPos);
+    private Path StartToShoot() {
+        return line(poses.rightStartPos, poses.shootIG).linear(poses.rightStartPos, poses.shootIG);
     }
-    private Path SecondSpot(){
-        return line(poses.secondLocPos, poses.scoringBlueShootPos).linear(poses.secondLocPos, poses.scoringBlueShootPos);
+    private Path ShootToPrePark(){
+        return line(poses.shootIG, poses.preParkPos).linear(poses.shootIG, poses.preParkPos);
+    }
+    private Path Park(){
+        return line(poses.preParkPos, poses.RSParkPos).linear(poses.preParkPos, poses.RSParkPos);
     }
 
     @Override
@@ -38,7 +41,7 @@ public class rightSidePark extends OpMode {
         follower = controlHub.getRobotSpecificPedroConstants();
 
         //sets pose to "start"
-        follower.setPose(poses.audienceStartPos);
+        follower.setPose(poses.rightStartPos);
         follower.update();
     }
     @Override
@@ -54,8 +57,9 @@ public class rightSidePark extends OpMode {
 
     private Command autoRoutine(){
         return sequential(
-                follow(follower, AudienceStartToShoot()),
-                follow(follower, SecondSpot())
+                follow(follower, StartToShoot()),
+                follow(follower, ShootToPrePark()),
+                follow(follower, Park())
         );
     }
 }

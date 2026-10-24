@@ -3,8 +3,11 @@ package org.firstinspires.ftc.teamcode;
 import com.pedropathing.api.PoseFactory;
 import com.pedropathing.math.Pose;
 
+import org.firstinspires.ftc.teamcode.pedro.procedures.ForesightTuner;
+
 public class Poses {
     private final double FORWARD = 90;
+    private final double ROBOT_SIZE = 17;
     //constructor and other important stuff
     private final PoseFactory poseFactory = PoseFactory.degrees();
     public Poses(){}
@@ -24,7 +27,7 @@ public class Poses {
 
 
 
-    //Audience side auto positions
+    //left side park
     public final Pose audienceStartPos = poseFactory.of(63, 5, FORWARD);
     public final Pose audienceShootPos = poseFactory.of(56, 20, FORWARD);
 
@@ -38,20 +41,17 @@ public class Poses {
     public final Pose parkNoHeading = poseFactory.of(9, 94, FORWARD);
     public final Pose zero = poseFactory.of(0,0, FORWARD);
 
-    //scoring side
-    public final Pose scoringBlueStartPos = poseFactory.of(70, 5, FORWARD);
-    public final Pose secondLocPos = poseFactory.of(70, 20, FORWARD);
-    public final Pose scoringBlueShootPos = poseFactory.of(130, 20, FORWARD);
-
-    public final Pose scoringBlueCollectContPose = poseFactory.of(144-35, 144-10 , FORWARD);
-    public final Pose scoringBlueCollectPos = poseFactory.of(144-13, 144-10, FORWARD + 90);
-
-    public final Pose scoringParkContPose = poseFactory.of(144-20, 144-49 , FORWARD);
-    public final Pose scoringParkPos = poseFactory.of(144-9, 144-94, FORWARD - 90);
+    //right side park
+    public final Pose rightStartPos = poseFactory.of(78, ROBOT_SIZE, FORWARD);
+    public final Pose shootIG = poseFactory.of(82, 20, FORWARD);
+    public final Pose preParkPos = poseFactory.of(144 - ROBOT_SIZE, ROBOT_SIZE, FORWARD);
+    public final Pose RSParkPos = poseFactory.of(144 - ROBOT_SIZE, 30, FORWARD);
 
 
 
-    //scoring blue
 
+    //debug poses
+    public final Pose testLineStart = poseFactory.of(0,0, FORWARD);
+    public final Pose testLineEnd = poseFactory.of(0, 20, FORWARD);
 
 }
