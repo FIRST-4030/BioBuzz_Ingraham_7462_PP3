@@ -6,11 +6,13 @@ import com.pedropathing.follower.Follower;
 import com.pedropathing.ivy.Command;
 import com.pedropathing.ivy.Scheduler;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.pedro.Constants;
 
+@Disabled
 @Autonomous(name="FionaPractice", group="Robot")
 public class FionaPractice extends LinearOpMode {
     private Follower follower;

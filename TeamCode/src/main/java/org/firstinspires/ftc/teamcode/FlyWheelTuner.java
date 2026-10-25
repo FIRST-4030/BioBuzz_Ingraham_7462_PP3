@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import android.annotation.SuppressLint;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -10,6 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  * Use to determine Kvelo and Kp, for the controller.
  * Data logging is used to record real-time data.
  */
+@Disabled
 @TeleOp(name = "Flywheel K Term Tuner")
 //@Disabled //comment this out when ready to add to android phone
 public class FlyWheelTuner extends OpMode {

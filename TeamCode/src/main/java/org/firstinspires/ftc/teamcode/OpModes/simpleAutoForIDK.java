@@ -10,12 +10,13 @@ import com.pedropathing.ivy.Command;
 import com.pedropathing.ivy.Scheduler;
 import com.pedropathing.paths.Path;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.ControlHub;
 import org.firstinspires.ftc.teamcode.Poses;
 
-
+@Disabled
 @Autonomous(name = "simpleAuto")
 public class simpleAutoForIDK extends OpMode {
     ControlHub controlHub;

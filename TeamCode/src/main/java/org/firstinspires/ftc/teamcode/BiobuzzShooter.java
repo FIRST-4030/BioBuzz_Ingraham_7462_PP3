@@ -12,10 +12,10 @@ public class BiobuzzShooter {
     DcMotorEx nectarMotor;
     DcMotorEx pollenMotor;
 
-    public double KVelocity = 0.0243; // power multiplier for rotations per second
+    private double Kvelo = 0.0243; // power multiplier for rotations per second
     // FeedBack term is Kp (proportional term)
-
-    public double Kp = 0.3; //INPUT NEW VALUES FROM TUNER
+    private double Kp = 0.3; //INPUT NEW VALUES FROM TUNER
+    private double veloPower = 0;
 
     //private static final double COUNTS_PER_REV = 28 ;  // REV HD Hex 1:1 nectarMotor Encoder
     private static final double GEAR_RATIO = 0.5;
@@ -23,7 +23,7 @@ public class BiobuzzShooter {
 
     public double targetVelocity = 0;
     public double SHOOTER_IDLE_POWER = 0.2;
-    private double shootPower = 0.9;
+    private double shootPower = 0.8;
     Limelight limelight;
 
     private boolean reachedReadyToShoot = false;
@@ -85,6 +85,11 @@ public class BiobuzzShooter {
         }
     }
 
+    //RENAME THESE
+    public void setActualShootPower(double newPower) {
+        shootPower = newPower;
+    }
+
     public double getShootPower() {
         return shootPower;
     }
@@ -114,6 +119,16 @@ public class BiobuzzShooter {
         nectarMotor.setPower(0);
         pollenMotor.setPower(0);
     }
+//
+//    public void overridePower() {
+//        double currentVelocity = (pollenMotor.getVelocity(AngleUnit.DEGREES) * 60 / 360) * GEAR_RATIO * 100; //60 seconds, 360 degrees/rotation
+//        double veloError = targetVelocity - currentVelocity;
+//        // CONTROLLER:  feedfoward = Kvelo + feedback = Kpos
+//        veloPower = veloError * Kp;
+//        double setPower = targetVelocity * Kvelo + veloPower;
+//        nectarMotor.setPower(setPower);
+//        pollenMotor.setPower(setPower);
+//    }
 
     public void resetTargetVelocity() {
         targetVelocity = 0;

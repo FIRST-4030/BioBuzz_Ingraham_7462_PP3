@@ -39,6 +39,7 @@ public class TeleOpMain extends OpMode {
         imu = hardwareMap.get(IMU.class, "imu");
         limelight = new Limelight(hardwareMap);
         chassis = new Chassis(hardwareMap);
+        //chassis.setMaxSpeed(1.0);
         collector = new Collector(hardwareMap);
         shooter = new BiobuzzShooter(hardwareMap, limelight);
         shotTimer = new ElapsedTime();
@@ -126,11 +127,21 @@ public class TeleOpMain extends OpMode {
         } else if (gamepad1.aWasReleased()) {
             shooter.manualReadyToShoot = false;
         }
+//
+//        if (gamepad1.bWasPressed()) {
+//            chassis.setMaxSpeed(0.7);
+//        } else if (gamepad1.bWasReleased()) {
+//            chassis.setMaxSpeed(1.0);
+//        }
 
         if (gamepad1.dpadUpWasPressed()) {
             shooter.setShootPower(0.05);
         } else if (gamepad1.dpadDownWasPressed()) {
             shooter.setShootPower(-0.05);
+        } else if (gamepad1.dpadLeftWasPressed()) {
+            shooter.setActualShootPower(1.0);
+        } else if (gamepad1.dpadRightWasPressed()) {
+            shooter.setActualShootPower(0.8);
         }
     }
 
