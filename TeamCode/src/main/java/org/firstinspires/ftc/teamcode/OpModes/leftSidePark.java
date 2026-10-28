@@ -23,20 +23,20 @@ public class leftSidePark extends OpMode {
     //bank of poses
     Poses poses = new Poses();
     private Path AudienceStartToShoot() {
-        return line(poses.audienceStartPos, poses.audienceShootPos).linear(poses.audienceStartPos, poses.audienceShootPos);
+        return line(poses.startPosLeft, poses.shootPosLeft).linear(poses.startPosLeft, poses.shootPosLeft);
     }
     private Path AudienceShootToCollect() {
-        return curve(poses.audienceShootPos, poses.audienceCollectContPose, poses.audienceCollectPos).linear(poses.audienceShootPos, poses.audienceCollectPos);
+        return curve(poses.shootPosLeft, poses.collectControlPosLeft, poses.shootPosLeft).linear(poses.shootPosLeft, poses.collectPosLeft);
     }
     private Path CollectToShoot() {
-        return line(poses.audienceCollectPos, poses.audienceShootPos).linear(poses.audienceCollectPos, poses.audienceShootPos);
+        return line(poses.collectPosLeft, poses.shootPosLeft).linear(poses.collectPosLeft, poses.shootPosLeft);
     }
     private Path ShootToPark() {
-        return curve(poses.audienceShootPos, poses.audienceParkContPose, poses.audienceParkPos).linear(poses.audienceShootPos, poses.audienceParkPos);
+        return curve(poses.shootPosLeft, poses.parkControlPosLeft, poses.parkPosLeft).linear(poses.shootPosLeft, poses.parkPosLeft);
     }
 
     private Path startToPark(){
-        return curve(poses.audienceStartPos, poses.audienceParkContPose, poses.audienceParkPos).linear(poses.audienceStartPos, poses.audienceParkPos);
+        return curve(poses.startPosLeft, poses.parkControlPosLeft, poses.parkPosLeft).linear(poses.startPosLeft, poses.parkPosLeft);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class leftSidePark extends OpMode {
         follower = controlHub.getRobotSpecificPedroConstants();
 
         //sets pose to "start"
-        follower.setPose(poses.audienceStartPos);
+        follower.setPose(poses.startPosLeft);
         follower.update();
     }
     @Override
