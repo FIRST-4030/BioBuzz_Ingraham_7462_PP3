@@ -28,14 +28,14 @@ public class Poses {
 
 
     //left side park
-    public final Pose audienceStartPos = poseFactory.of(63, 5, FORWARD);
-    public final Pose audienceShootPos = poseFactory.of(56, 20, FORWARD);
+    public final Pose startPosLeft = poseFactory.of(63, 5, FORWARD);
+    public final Pose shootPosLeft = poseFactory.of(56, 20, FORWARD);
 
-    public final Pose audienceCollectContPose = poseFactory.of(35, 10 , FORWARD);
-    public final Pose audienceCollectPos = poseFactory.of(13, 10, FORWARD + 90);
+    public final Pose collectControlPosLeft = poseFactory.of(35, 10 , FORWARD);
+    public final Pose collectPosLeft = poseFactory.of(13, 10, FORWARD + 90);
 
-    public final Pose audienceParkContPose = poseFactory.of(20, 49 , FORWARD);
-    public final Pose audienceParkPos = poseFactory.of(9, 94, FORWARD - 90);
+    public final Pose parkControlPosLeft = poseFactory.of(20, 49 , FORWARD);
+    public final Pose parkPosLeft = poseFactory.of(9, 94, FORWARD - 90);
 
     //worst case
     public final Pose parkNoHeading = poseFactory.of(9, 94, FORWARD);
