@@ -13,20 +13,19 @@ public class BiobuzzShooter {
     DcMotorEx pollenMotor;
 
     private static final double GEAR_RATIO = 0.5;
-    private static final int TICKS_REV = 28;
+    private static final double TICKS_REV = 28;
     private static final double errorMargin = 0.02;
 
-    private double Kvelo = 0.0004; // power multiplier for rotations per second
-    private double Kp = 0.0006; // FeedBack term is Kp (proportional term)
+    private double Kvelo = 0.00034; // power multiplier for rotations per second
+    private double Kp = -0.0045; // FeedBack term is Kp (proportional term)
     private double veloPower = 0;
     private double veloError;
 
     public double targetVelocity = 0;
     public double SHOOTER_IDLE_SPEED = 1000;
-    public double SHOOTER_CLOSE_SPEED = 2300;
-    public double SHOOTER_FAR_SPEED = 2600;
+    public double SHOOTER_CLOSE_SPEED = -2300;
+    public double SHOOTER_FAR_SPEED = -2600;
 
-    //private double shootPower = 0.8;
     Limelight limelight;
 
     private boolean reachedReadyToShoot = false;

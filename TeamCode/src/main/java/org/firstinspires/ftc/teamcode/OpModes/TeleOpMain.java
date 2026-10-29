@@ -24,7 +24,7 @@ public class TeleOpMain extends OpMode {
     Collector collector;
     ElapsedTime shotTimer;
 
-    private double shooterSpeedRPM = 1000;
+    private double shooterSpeedRPM = -1500;
 
     public enum RunMode {
         IDLE,
@@ -41,7 +41,7 @@ public class TeleOpMain extends OpMode {
         imu = hardwareMap.get(IMU.class, "imu");
         limelight = new Limelight(hardwareMap);
         chassis = new Chassis(hardwareMap);
-        //chassis.setMaxSpeed(1.0);
+        chassis.setMaxSpeed(1.0);
         collector = new Collector(hardwareMap);
         shooter = new BiobuzzShooter(hardwareMap, limelight);
         shotTimer = new ElapsedTime();
@@ -60,7 +60,6 @@ public class TeleOpMain extends OpMode {
         shooter.setShooterDirection();
         shooter.resetTargetVelocity();
         shooter.overridePower();
-        //shooter.setShooterPower(shooter.getShooterLowPower());
 
         limelight.lookForBestAimingPipeline();
     }
@@ -73,22 +72,21 @@ public class TeleOpMain extends OpMode {
             case IDLE:
                 collector.setCollectorSpeed(Collector.CollectorMode.IDLE);
                 collector.setCollector();
+
                 shooter.setShooterMode(BiobuzzShooter.ShooterMode.IDLE);
                 shooter.setShooterDirection();
-
                 shooter.resetTargetVelocity();
-//                shooter.setShooterPower(shooter.getShooterLowPower());
 
                 chassis.drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
                 break;
             case COLLECTING:
                 collector.setCollectorSpeed(Collector.CollectorMode.COLLECT);
                 collector.setCollector();
+
                 shooter.setShooterMode(BiobuzzShooter.ShooterMode.IDLE);
                 shooter.setShooterDirection();
-
                 shooter.resetTargetVelocity();
-//                shooter.setShooterPower(shooter.getShooterLowPower());
+
                 chassis.drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
                 break;
             case SHOOTING:
@@ -99,11 +97,8 @@ public class TeleOpMain extends OpMode {
 
                     shooter.setShooterMode(BiobuzzShooter.ShooterMode.SHOOTING);
                     shooter.setShooterDirection();
-
                     shooter.setTargetVelocity(shooterSpeedRPM);
-                    //shooter.overridePower();
 
-//                    shooter.setShooterPower(shooter.getShootPower());
                     chassis.lockedOnDrive(-gamepad1.left_stick_y, gamepad1.left_stick_x, limelight);
                 } else {
                     collector.setCollectorSpeed(Collector.CollectorMode.IDLE);
@@ -111,11 +106,8 @@ public class TeleOpMain extends OpMode {
 
                     shooter.setShooterMode(BiobuzzShooter.ShooterMode.SHOOTING);
                     shooter.setShooterDirection();
-
                     shooter.setTargetVelocity(shooterSpeedRPM);
-                    //shooter.overridePower();
 
-//                    shooter.setShooterPower(shooter.getShootPower());
                     chassis.drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
                 }
                 break;
@@ -125,7 +117,6 @@ public class TeleOpMain extends OpMode {
         }
 
         shooter.overridePower();
-        //telemetry.addData("Shooter Power", shooter.getShootPower());
         handleTelemetry();
     }
 
@@ -147,31 +138,30 @@ public class TeleOpMain extends OpMode {
         } else if (gamepad1.aWasReleased()) {
             shooter.manualReadyToShoot = false;
         }
-//
-//        if (gamepad1.bWasPressed()) {
-//            chassis.setMaxSpeed(0.7);
-//        } else if (gamepad1.bWasReleased()) {
-//            chassis.setMaxSpeed(1.0);
-//        }
+
+        if (gamepad1.leftBumperWasPressed()) {
+            chassis.setMaxSpeed(0.5);
+        } else if (gamepad1.leftBumperWasReleased()) {
+            chassis.setMaxSpeed(1.0);
+        }
 
         if (gamepad1.dpadUpWasPressed()) {
-            shooterSpeedRPM += 100;
-        } else if (gamepad1.dpadDownWasPressed()) {
             shooterSpeedRPM -= 100;
+        } else if (gamepad1.dpadDownWasPressed()) {
+            shooterSpeedRPM += 100;
+        } else if (gamepad1.dpadLeftWasPressed()) {
+            shooterSpeedRPM = shooter.SHOOTER_CLOSE_SPEED;
+        } else if (gamepad1.dpadRightWasPressed()) {
+            shooterSpeedRPM = shooter.SHOOTER_FAR_SPEED;
         }
-//        } else if (gamepad1.dpadLeftWasPressed()) {
-//            shooter.setActualShootPower(1.0);
-//        } else if (gamepad1.dpadRightWasPressed()) {
-//            shooter.setActualShootPower(0.8);
-//        }
     }
 
     public void handleTelemetry() {
         telemetry.addLine("LT: Collecting, RT: Shooting, A: Shoot");
         telemetry.addLine("Dpad: Up: Faster shooter, DOWN: Slower shooter");
-        telemetry.addLine();
-        telemetry.addData("Shooter Mode", shooter.getShooterMode());
-        telemetry.addData("Collector Mode", collector.getCollectorMode());
+
+        telemetry.addLine("-------");
+
         telemetry.addData("Shooter Target Velocity", shooter.getTargetVelocity());
         telemetry.addData("Current Shooter Velo (RPM)", shooter.getVelocity());
         telemetry.addData("VeloError", shooter.getVeloError());
@@ -179,25 +169,6 @@ public class TeleOpMain extends OpMode {
 
         telemetry.addLine("-------");
 
-//        if (!(Blackboard.getAlliance() == Blackboard.Alliance.RED || Blackboard.getAlliance() == Blackboard.Alliance.BLUE)) {
-//            telemetry.addLine("WARNING: ALLIANCE UNSET");
-//        } else {
-//            telemetry.addData("Alliance", Blackboard.getAlliance());
-//        }
-//
-//        telemetry.addLine("-------");
-//
-//        telemetry.addData("Pipeline", limelight.getCurrentPipelineName());
-//        telemetry.addData("MS since pipeline switch", limelight.getTimeSinceLastPipelineSwitch().milliseconds());
-//
-//        if (limelight.resultHasGoodTargets()) {
-//            telemetry.addData("On target", limelight.isOnTarget());
-//            telemetry.addData("Tx", limelight.getXError());
-//            telemetry.addData("Ty", limelight.getYError());
-//            telemetry.addData("Ta", limelight.getTa());
-//        } else {
-//            telemetry.addLine("No good targets visible");
-//        }
         telemetry.update();
     }
 }
