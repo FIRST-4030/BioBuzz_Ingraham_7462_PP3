@@ -15,11 +15,11 @@ public class Shooter {
     private final DcMotorEx pollenShooter;
 
     // Kvelo is the feed forward term.  Tune first by adjusting until rotational velo target is met
-    private double Kvelo = 0.03; // power multiplier for rotations per second
+    private double Kvelo = 0; // power multiplier for rotations per second
 
     // FeedBack term is Kp (proportional term)
     // Set Kp to zero when tuning the Kvelo term!!
-    private double Kp = 0.7;  // no gain in improvement when increasing beyond this
+    private double Kp = 0;  // no gain in improvement when increasing beyond this
 
     private static final double   GEAR_RATIO = 0.5;
 
@@ -49,7 +49,7 @@ public class Shooter {
      * overridePower method should be called in the main loop()
      */
     public void overridePower() {
-        double currentVelocity = (pollenShooter.getVelocity(AngleUnit.DEGREES) * 60 / 360) * GEAR_RATIO * 100; //60 seconds, 360 degrees/rotation
+        double currentVelocity = (pollenShooter.getVelocity() / 28) * 60 * GEAR_RATIO;//(pollenShooter.getVelocity(AngleUnit.DEGREES) * 60 / 360) * GEAR_RATIO * 100; //60 seconds, 360 degrees/rotation
         double veloError = targetVelocity - currentVelocity;
         // CONTROLLER:  feedfoward = Kvelo + feedback = Kpos
         veloPower = veloError * Kp;

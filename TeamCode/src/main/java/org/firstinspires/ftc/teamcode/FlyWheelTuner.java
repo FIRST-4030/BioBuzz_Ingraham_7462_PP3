@@ -11,26 +11,26 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  * Use to determine Kvelo and Kp, for the controller.
  * Data logging is used to record real-time data.
  */
-@Disabled
 @TeleOp(name = "Flywheel K Term Tuner")
 //@Disabled //comment this out when ready to add to android phone
 public class FlyWheelTuner extends OpMode {
     Shooter shooter;
     Collector collector;
 
-    private double Kvelo = -0.0004;  // modified while opmode runs
+    private double Kvelo = 0;  // modified while opmode runs
 
-    private double Kp = -0.006;    // modified while opmode runs
+    private double Kp = -0.0045;    // modified while opmode runs
     private double IDLE_VELOCITY = -1500; //RPM
     //static final
     private double power = 0.2;
+    private double velocity;
 
     FlyWheelTuner.Datalog datalog = new FlyWheelTuner.Datalog("FlywheelLog");
 
     @Override
     public void init() {
         shooter = new Shooter(hardwareMap, "nectarShooter", "pollenShooter", true);
-        shooter.setControllerValues(Kp, Kvelo);
+        shooter.setControllerValues(0, Kvelo);
 
         collector = new Collector(hardwareMap);
      }
@@ -41,7 +41,7 @@ public class FlyWheelTuner extends OpMode {
     public void init_loop() {
 
         // allow the user to change the motor power and see the velocity and Kvelo
-        double velocity = shooter.getVelocity();
+        velocity = shooter.getVelocity();
         Kvelo = power/velocity;
 
         if (gamepad1.dpadUpWasPressed()) power += 0.01;
@@ -63,7 +63,7 @@ public class FlyWheelTuner extends OpMode {
 
     @Override
     public void start() {
-        shooter.setTargetVelocity(IDLE_VELOCITY);
+        shooter.setTargetVelocity(velocity);
         shooter.setControllerValues(Kp, Kvelo);
     }
 
@@ -76,16 +76,16 @@ public class FlyWheelTuner extends OpMode {
         telemetry.addLine("Slow shooter down and look at Power, adjust Kp");
         telemetry.addLine("Power from Kp should not go much above 1 when loaded");
 
-        telemetry.addData("Kp term DPAD +UP -DOWN", Kp);
+        telemetry.addData("Kp term DPAD +UP -DOWN", " %.7f", Kp);
 
-        if (gamepad1.dpadUpWasPressed()) Kp += 0.0001;
-        else if (gamepad1.dpadDownWasPressed()) Kp -= 0.0001;
-        telemetry.addLine(String.format("IDLE_VELOCITY Y and A, Velo %.1f ,Current Velo %.1f (mm)",
-                IDLE_VELOCITY,shooter.getVelocity()));
+        if (gamepad1.dpadUpWasPressed()) Kp += 0.00002;
+        else if (gamepad1.dpadDownWasPressed()) Kp -= 0.00002;
+        telemetry.addLine(String.format("Target Velo, Y and A, Velo %.1f ,    Velo %.1f",
+                velocity,shooter.getVelocity()));
         if (gamepad1.yWasReleased()) {
-            IDLE_VELOCITY += 100;
+            velocity += 100;
         } else if (gamepad1.aWasReleased()) {
-            IDLE_VELOCITY -= 100;
+            velocity -= 100;
         }
 
         collector.setCollectorSpeed(Collector.CollectorMode.COLLECT);
@@ -98,7 +98,7 @@ public class FlyWheelTuner extends OpMode {
 
         telemetry.update();
 
-        shooter.setTargetVelocity(IDLE_VELOCITY);
+        shooter.setTargetVelocity(velocity);
         shooter.setControllerValues(Kp, Kvelo);
         shooter.overridePower(); // shooter motor speed controller
 

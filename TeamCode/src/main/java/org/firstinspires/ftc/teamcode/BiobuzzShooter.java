@@ -12,20 +12,16 @@ public class BiobuzzShooter {
     DcMotorEx nectarMotor;
     DcMotorEx pollenMotor;
 
-    private double Kvelo = 0.0004; // power multiplier for rotations per second
-    private double Kp = 0.006; // FeedBack term is Kp (proportional term)
-    private double veloPower = 0;
-
-    //private static final double COUNTS_PER_REV = 28 ;  // REV HD Hex 1:1 nectarMotor Encoder
     private static final double GEAR_RATIO = 0.5;
     private static final int TICKS_REV = 28;
     private static final double errorMargin = 0.02;
 
-    public double targetVelocity = 0;
+    private double Kvelo = 0.0004; // power multiplier for rotations per second
+    private double Kp = 0.0006; // FeedBack term is Kp (proportional term)
+    private double veloPower = 0;
     private double veloError;
 
-    //public double SHOOTER_IDLE_POWER = 0.2;
-
+    public double targetVelocity = 0;
     public double SHOOTER_IDLE_SPEED = 1000;
     public double SHOOTER_CLOSE_SPEED = 2300;
     public double SHOOTER_FAR_SPEED = 2600;
@@ -67,11 +63,6 @@ public class BiobuzzShooter {
         this.shooterMode = shooterMode;
     }
 
-//    public void setShooterPower(double power) {
-//        nectarMotor.setPower(power);
-//        pollenMotor.setPower(power);
-//    }
-
     public void setShooterDirection() {
         if (shooterMode == ShooterMode.IDLE) {
             nectarMotor.setDirection(DcMotorSimple.Direction.FORWARD);
@@ -81,39 +72,6 @@ public class BiobuzzShooter {
             pollenMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         }
     }
-
-//    public void setShootPower(double power) {
-//        if (getShootPower() + power > 1) {
-//            this.shootPower = 1;
-//        } else if (getShootPower() + power < 0) {
-//            this.shootPower = 0;
-//        } else {
-//            this.shootPower = getShootPower() + power;
-//        }
-//    }
-
-    //RENAME THESE
-    //public void setActualShootPower(double newPower) {
-    //    shootPower = newPower;
-    //}
-
-    //public double getShootPower() {
-    //    return shootPower;
-    //}
-
-//    public void setShooterLowPower(double power) {
-//        if (getShooterLowPower() + power > 0.5) {
-//            this.SHOOTER_IDLE_POWER = 0.5;
-//        } else if (getShooterLowPower() + power < 0) {
-//            this.SHOOTER_IDLE_POWER = 0;
-//        } else {
-//            this.SHOOTER_IDLE_POWER = getShootPower() + power;
-//        }
-//    }
-
-//    public double getShooterLowPower() {
-//        return SHOOTER_IDLE_POWER;
-//    }
 
     public boolean readyToShoot() {
         return (shooterMode == ShooterMode.SHOOTING &&
@@ -133,6 +91,10 @@ public class BiobuzzShooter {
 
     public void resetTargetVelocity() {
         targetVelocity = 0;
+    }
+
+    public double getVeloPower() {
+        return veloPower;
     }
 
     public double getTargetVelocity() {

@@ -24,6 +24,8 @@ public class TeleOpMain extends OpMode {
     Collector collector;
     ElapsedTime shotTimer;
 
+    private double shooterSpeedRPM = 1000;
+
     public enum RunMode {
         IDLE,
         COLLECTING,
@@ -98,7 +100,7 @@ public class TeleOpMain extends OpMode {
                     shooter.setShooterMode(BiobuzzShooter.ShooterMode.SHOOTING);
                     shooter.setShooterDirection();
 
-                    shooter.setTargetVelocity(shooter.SHOOTER_CLOSE_SPEED);
+                    shooter.setTargetVelocity(shooterSpeedRPM);
                     //shooter.overridePower();
 
 //                    shooter.setShooterPower(shooter.getShootPower());
@@ -110,7 +112,7 @@ public class TeleOpMain extends OpMode {
                     shooter.setShooterMode(BiobuzzShooter.ShooterMode.SHOOTING);
                     shooter.setShooterDirection();
 
-                    shooter.setTargetVelocity(shooter.SHOOTER_CLOSE_SPEED);
+                    shooter.setTargetVelocity(shooterSpeedRPM);
                     //shooter.overridePower();
 
 //                    shooter.setShooterPower(shooter.getShootPower());
@@ -152,10 +154,11 @@ public class TeleOpMain extends OpMode {
 //            chassis.setMaxSpeed(1.0);
 //        }
 
-//        if (gamepad1.dpadUpWasPressed()) {
-//            shooter.setShootPower(0.05);
-//        } else if (gamepad1.dpadDownWasPressed()) {
-//            shooter.setShootPower(-0.05);
+        if (gamepad1.dpadUpWasPressed()) {
+            shooterSpeedRPM += 100;
+        } else if (gamepad1.dpadDownWasPressed()) {
+            shooterSpeedRPM -= 100;
+        }
 //        } else if (gamepad1.dpadLeftWasPressed()) {
 //            shooter.setActualShootPower(1.0);
 //        } else if (gamepad1.dpadRightWasPressed()) {
@@ -166,12 +169,13 @@ public class TeleOpMain extends OpMode {
     public void handleTelemetry() {
         telemetry.addLine("LT: Collecting, RT: Shooting, A: Shoot");
         telemetry.addLine("Dpad: Up: Faster shooter, DOWN: Slower shooter");
-        telemetry.addData("Current Shooter Velo (RPM)", shooter.getVelocity());
         telemetry.addLine();
         telemetry.addData("Shooter Mode", shooter.getShooterMode());
         telemetry.addData("Collector Mode", collector.getCollectorMode());
         telemetry.addData("Shooter Target Velocity", shooter.getTargetVelocity());
+        telemetry.addData("Current Shooter Velo (RPM)", shooter.getVelocity());
         telemetry.addData("VeloError", shooter.getVeloError());
+        telemetry.addData("veloPower", shooter.getVeloPower());
 
         telemetry.addLine("-------");
 

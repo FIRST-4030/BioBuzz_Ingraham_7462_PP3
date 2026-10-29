@@ -24,9 +24,9 @@ public class simpleAutoForIDK extends OpMode {
     //bank of poses
     Poses poses = new Poses();
 
-    private Path StartToEnd(){
-        return curve(poses.audienceStartPos, poses.zero, poses.parkNoHeading).linear(poses.audienceStartPos, poses.audienceParkPos);
-    }
+//    private Path StartToEnd(){
+//        //return curve(poses.audienceStartPos, poses.zero, poses.parkNoHeading).linear(poses.audienceStartPos, poses.audienceParkPos);
+//    }
 
     @Override
     public void init() {
@@ -42,7 +42,7 @@ public class simpleAutoForIDK extends OpMode {
     }
     @Override
     public void start() {
-        schedule(autoRoutine());
+        //schedule(autoRoutine());
     }
 
     @Override
@@ -51,9 +51,9 @@ public class simpleAutoForIDK extends OpMode {
         follower.update();
     }
 
-    private Command autoRoutine(){
-        return sequential(
-                follow(follower, StartToEnd())
-        );
-    }
+//    private Command autoRoutine(){
+//        return sequential(
+//                follow(follower, StartToEnd())
+//        );
+//    }
 }
