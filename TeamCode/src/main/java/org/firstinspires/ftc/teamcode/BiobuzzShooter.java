@@ -23,8 +23,8 @@ public class BiobuzzShooter {
 
     public double targetVelocity = 0;
     public double SHOOTER_IDLE_SPEED = 1000;
-    public double SHOOTER_CLOSE_SPEED = -2300;
-    public double SHOOTER_FAR_SPEED = -2600;
+    public double SHOOTER_CLOSE_SPEED = 2300;
+    public double SHOOTER_FAR_SPEED = 2600;
 
     Limelight limelight;
 
@@ -80,6 +80,12 @@ public class BiobuzzShooter {
 
     public void overridePower() {
         double currentVelocity = getVelocity();
+//
+//        if (targetVelocity - currentVelocity >= 50) {
+//
+//        }
+//
+//
         veloError = targetVelocity - currentVelocity;
         // CONTROLLER:  feedfoward = Kvelo + feedback = Kpos
         veloPower = veloError * Kp;

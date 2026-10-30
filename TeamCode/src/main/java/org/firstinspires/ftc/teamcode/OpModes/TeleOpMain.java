@@ -24,7 +24,8 @@ public class TeleOpMain extends OpMode {
     Collector collector;
     ElapsedTime shotTimer;
 
-    private double shooterSpeedRPM = -1500;
+    private double shooterSpeedRPM = 1500;
+    private double shooterStopper = 1000;
 
     public enum RunMode {
         IDLE,
@@ -44,7 +45,7 @@ public class TeleOpMain extends OpMode {
         chassis.setMaxSpeed(1.0);
         collector = new Collector(hardwareMap);
         shooter = new BiobuzzShooter(hardwareMap, limelight);
-        shotTimer = new ElapsedTime();
+        shotTimer = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
     }
 
     public void init_loop() {
@@ -74,8 +75,17 @@ public class TeleOpMain extends OpMode {
                 collector.setCollector();
 
                 shooter.setShooterMode(BiobuzzShooter.ShooterMode.IDLE);
-                shooter.setShooterDirection();
-                shooter.resetTargetVelocity();
+                //shooter.setShooterDirection();
+                shooter.setTargetVelocity(0);
+//
+//                if (shotTimer.milliseconds() >= 500 && shooterStopper < 0) {
+//                    //shooter.getVelocity() < 0 &&
+//                    shooterStopper += 100;
+//                    shooter.setTargetVelocity(shooterStopper);
+//                    shotTimer.reset();
+//                } else if (shooterStopper <= 0) {
+//                    shooter.resetTargetVelocity();
+//                }
 
                 chassis.drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
                 break;
@@ -84,7 +94,7 @@ public class TeleOpMain extends OpMode {
                 collector.setCollector();
 
                 shooter.setShooterMode(BiobuzzShooter.ShooterMode.IDLE);
-                shooter.setShooterDirection();
+                //shooter.setShooterDirection();
                 shooter.resetTargetVelocity();
 
                 chassis.drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
@@ -96,7 +106,7 @@ public class TeleOpMain extends OpMode {
                     collector.setCollector();
 
                     shooter.setShooterMode(BiobuzzShooter.ShooterMode.SHOOTING);
-                    shooter.setShooterDirection();
+                    //shooter.setShooterDirection();
                     shooter.setTargetVelocity(shooterSpeedRPM);
 
                     chassis.lockedOnDrive(-gamepad1.left_stick_y, gamepad1.left_stick_x, limelight);
@@ -105,9 +115,10 @@ public class TeleOpMain extends OpMode {
                     collector.setCollector();
 
                     shooter.setShooterMode(BiobuzzShooter.ShooterMode.SHOOTING);
-                    shooter.setShooterDirection();
+                    //shooter.setShooterDirection();
                     shooter.setTargetVelocity(shooterSpeedRPM);
 
+                    shotTimer.reset();
                     chassis.drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
                 }
                 break;
@@ -116,6 +127,7 @@ public class TeleOpMain extends OpMode {
                 break;
         }
 
+        shooterStopper = shooter.getVelocity();
         shooter.overridePower();
         handleTelemetry();
     }
@@ -166,6 +178,7 @@ public class TeleOpMain extends OpMode {
         telemetry.addData("Current Shooter Velo (RPM)", shooter.getVelocity());
         telemetry.addData("VeloError", shooter.getVeloError());
         telemetry.addData("veloPower", shooter.getVeloPower());
+        telemetry.addData("shooterStopper", shooterStopper);
 
         telemetry.addLine("-------");
 

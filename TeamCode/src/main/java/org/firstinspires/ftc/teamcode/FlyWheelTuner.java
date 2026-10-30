@@ -19,8 +19,8 @@ public class FlyWheelTuner extends OpMode {
 
     private double Kvelo = 0;  // modified while opmode runs
 
-    private double Kp = -0.0045;    // modified while opmode runs
-    private double IDLE_VELOCITY = -1500; //RPM
+    private double Kp = 0;    // modified while opmode runs
+    //private double IDLE_VELOCITY = 1500; //RPM
     //static final
     private double power = 0.2;
     private double velocity;
