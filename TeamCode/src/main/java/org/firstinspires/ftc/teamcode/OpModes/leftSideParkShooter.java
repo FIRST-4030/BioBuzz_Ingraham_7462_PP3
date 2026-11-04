@@ -64,7 +64,7 @@ public class leftSideParkShooter extends OpMode {
         collector = new Collector(hardwareMap);
         limelight = new Limelight(hardwareMap);
 
-        limelight.setPipeline(1);
+
 
         //Reset movements
         Scheduler.reset();
@@ -96,12 +96,12 @@ public class leftSideParkShooter extends OpMode {
                         elapsedTime.seconds() > 20
                 ),
                 instant(() ->{
-                    if (elapsedTime.seconds() > 20){
+                    if (elapsedTime.seconds()>20){
                         collector.setCollectorSpeed(Collector.CollectorMode.IDLE);
                         //shoot
-                        waitMs(1000);
                     }
                 }),
+
 //                follow(follower, ShootToCollect()),
 //                follow(follower, CollectToShoot()),
                 follow(follower, ShootToPark())

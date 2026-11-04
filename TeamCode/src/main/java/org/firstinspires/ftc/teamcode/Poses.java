@@ -53,5 +53,15 @@ public class Poses {
     //debug poses
     public final Pose testLineStart = poseFactory.of(0,0, FORWARD);
     public final Pose testLineEnd = poseFactory.of(0, 20, FORWARD);
+    public final Pose arenaCorner1 = poseFactory.of(ROBOT_SIZE, ROBOT_SIZE, FORWARD);
+    public final Pose arenaCorner2 = poseFactory.of(144 - ROBOT_SIZE, 144 - ROBOT_SIZE, FORWARD);
+
+    public Pose of (double x, double y, double heading) {
+        return poseFactory.of(x, y, heading);
+    }
+
+    public Pose of (double x, double y) {
+        return poseFactory.of(x, y, FORWARD);
+    }
 
 }
