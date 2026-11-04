@@ -97,7 +97,7 @@ public class leftShooterTest extends OpMode {
     }
     @Override
     public void start() {
-        schedule(simplifiedRout());
+        schedule(autoPark());
 //        elapsedTime.reset();
     }
 
@@ -158,7 +158,7 @@ public class leftShooterTest extends OpMode {
     }
     private Path robotToPark(){
         Pose currentPose = follower.pose();
-        return curve(currentPose, poses.of(24, 24), poses.parkPosLeft);
+        return curve(currentPose, poses.of(24, 24), poses.parkPosLeft).linear(currentPose, poses.parkPosLeft);
     }
     private Command autoPark(){
         return sequential(
