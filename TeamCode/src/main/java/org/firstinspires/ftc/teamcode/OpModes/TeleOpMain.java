@@ -13,7 +13,6 @@ import org.firstinspires.ftc.teamcode.Chassis;
 import org.firstinspires.ftc.teamcode.ControlHub;
 import org.firstinspires.ftc.teamcode.Limelight;
 
-@Disabled
 @TeleOp(name = "TeleOpMain")
 public class TeleOpMain extends OpMode {
 
@@ -77,7 +76,6 @@ public class TeleOpMain extends OpMode {
                 collector.setCollector();
 
                 shooter.setShooterMode(BiobuzzShooter.ShooterMode.IDLE);
-                //shooter.setShooterDirection();
                 shooter.setTargetVelocity(0);
 //
 //                if (shotTimer.milliseconds() >= 500 && shooterStopper < 0) {

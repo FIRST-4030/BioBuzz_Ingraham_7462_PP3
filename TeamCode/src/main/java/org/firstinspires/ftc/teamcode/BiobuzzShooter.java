@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
@@ -11,6 +12,10 @@ public class BiobuzzShooter {
 
     DcMotorEx nectarMotor;
     DcMotorEx pollenMotor;
+    DcMotorEx backSpinMotor;
+
+    Servo nectarServo;
+    Servo pollenServo;
 
     private static final double GEAR_RATIO = 0.5;
     private static final double TICKS_REV = 28;
@@ -46,10 +51,16 @@ public class BiobuzzShooter {
         nectarMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);  // WITH OUT!
         nectarMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
+        nectarServo = hardwareMap.get(Servo.class, "nectarServo");
+
         pollenMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "pollenShooter");
         pollenMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         pollenMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);  // WITH OUT!
         pollenMotor.setDirection(DcMotor.Direction.FORWARD);
+
+        pollenServo = hardwareMap.get(Servo.class, "pollenServo");
+
+        backSpinMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "backSpinMotor");
 
         this.limelight = limelight;
     }
@@ -80,18 +91,26 @@ public class BiobuzzShooter {
 
     public void overridePower() {
         double currentVelocity = getVelocity();
-//
-//        if (targetVelocity - currentVelocity >= 50) {
-//
-//        }
-//
-//
         veloError = targetVelocity - currentVelocity;
         // CONTROLLER:  feedfoward = Kvelo + feedback = Kpos
         veloPower = veloError * Kp;
         double setPower = targetVelocity * Kvelo + veloPower;
         nectarMotor.setPower(setPower);
         pollenMotor.setPower(setPower);
+    }
+
+    public void setBackSpinPower(double power) {
+        backSpinMotor.setPower(power);
+    }
+
+    public void setShooterServos(boolean open) {
+        if (open) {
+            nectarServo.setPosition(0.05);
+            pollenServo.setPosition(0.7);
+        } else {
+            nectarServo.setPosition(0.55);
+            pollenServo.setPosition(0.3);
+        }
     }
 
     public void resetTargetVelocity() {
