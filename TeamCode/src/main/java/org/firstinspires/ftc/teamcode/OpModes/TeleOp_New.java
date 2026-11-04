@@ -1,0 +1,151 @@
+package org.firstinspires.ftc.teamcode.OpModes;
+
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.generalUtilities.Blackboard;
+import org.firstinspires.ftc.teamcode.Collector;
+import org.firstinspires.ftc.teamcode.BiobuzzShooter;
+import org.firstinspires.ftc.teamcode.Chassis;
+import org.firstinspires.ftc.teamcode.ControlHub;
+import org.firstinspires.ftc.teamcode.Limelight;
+
+@TeleOp(name = "TeleOp_New")
+public class TeleOp_New extends OpMode {
+
+    ControlHub controlHub;
+
+    IMU imu;
+    Limelight limelight;
+    Chassis chassis;
+    BiobuzzShooter shooter;
+    Collector collector;
+    ElapsedTime shotTimer;
+
+    private double shooterSpeedRPM = -1500;
+
+    boolean shooting = false;
+
+    @Override
+    public void init() {
+        controlHub = new ControlHub(hardwareMap);
+
+        imu = hardwareMap.get(IMU.class, "imu");
+        limelight = new Limelight(hardwareMap);
+        chassis = new Chassis(hardwareMap);
+        chassis.setMaxSpeed(1.0);
+        collector = new Collector(hardwareMap);
+        shooter = new BiobuzzShooter(hardwareMap, limelight);
+        shotTimer = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
+    }
+
+    public void init_loop() {
+        limelight.updateData(); // This line is vital, and should be called first in the loop
+        controlHub.processBotIdentificationTelemetry(telemetry);
+        Blackboard.initLoopProcess(telemetry, gamepad1);
+    }
+
+    public void start() {
+        collector.setCollectorSpeed(Collector.CollectorMode.IDLE);
+        collector.setCollector();
+        shooter.setShooterMode(BiobuzzShooter.ShooterMode.IDLE);
+        shooter.setShooterDirection();
+        shooter.resetTargetVelocity();
+        shooter.overridePower();
+
+        limelight.lookForBestAimingPipeline();
+    }
+
+    public void loop() {
+        limelight.updateData(); // This line is vital, and should be called first in the loop
+
+        handleControls();
+        handleModeControls();
+        handleTelemetry();
+        chassis.drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+    }
+
+    public void handleControls() {
+        if (gamepad1.leftBumperWasPressed()) {
+            chassis.setMaxSpeed(0.5);
+        } else if (gamepad1.leftBumperWasReleased()) {
+            chassis.setMaxSpeed(1.0);
+        }
+
+        if (gamepad1.dpadUpWasPressed()) {
+            shooterSpeedRPM -= 100;
+        } else if (gamepad1.dpadDownWasPressed()) {
+            shooterSpeedRPM += 100;
+        } else if (gamepad1.dpadLeftWasPressed()) {
+            shooterSpeedRPM = shooter.SHOOTER_CLOSE_SPEED;
+        } else if (gamepad1.dpadRightWasPressed()) {
+            shooterSpeedRPM = shooter.SHOOTER_FAR_SPEED;
+        }
+
+        if (gamepad1.aWasPressed()) {
+            shooter.setShooterMode(BiobuzzShooter.ShooterMode.SHOOTING);
+            shooter.setTargetVelocity(1000);
+        } else if (gamepad1.aWasReleased()) {
+            shooter.setTargetVelocity(0);
+            shooter.setShooterMode(BiobuzzShooter.ShooterMode.IDLE);
+        }
+    }
+
+    public void handleModeControls() {
+        if (shooting) {
+            shoot();
+        } else if (gamepad1.rightBumperWasPressed()) {
+            shooting = true;
+            shotTimer.reset();
+        } else if (gamepad1.left_trigger_pressed) {
+            collector.setCollectorSpeed(Collector.CollectorMode.COLLECT);
+            collector.setCollector();
+
+            shooter.setShooterMode(BiobuzzShooter.ShooterMode.IDLE);
+
+            shooter.setTargetVelocity(0);
+            shooter.setShooterServos(false);
+            shooter.setBackSpinPower(0);
+        } else {
+            collector.setCollectorSpeed(Collector.CollectorMode.IDLE);
+            collector.setCollector();
+
+            shooter.setShooterMode(BiobuzzShooter.ShooterMode.IDLE);
+
+            //shooter.setTargetVelocity(0);
+            shooter.setShooterServos(false);
+            shooter.setBackSpinPower(0);
+        }
+    }
+
+    public void shoot() {
+        collector.setCollectorSpeed(Collector.CollectorMode.IDLE);
+        collector.setCollector();
+        shooter.setShooterMode(BiobuzzShooter.ShooterMode.SHOOTING);
+        shooter.setTargetVelocity(shooterSpeedRPM);
+        shooter.setBackSpinPower(0.7);
+
+        if (shooter.atSpeed() && shotTimer.milliseconds() <= 5000) {
+            shooter.setShooterServos(true);
+            collector.setCollectorSpeed(Collector.CollectorMode.COLLECT);
+            collector.setCollector();
+        } else if (shotTimer.milliseconds() > 5000) {
+            shooting = false;
+        }
+    }
+
+    public void handleTelemetry() {
+        telemetry.addData("In shooting mode", shooting);
+        telemetry.addData("Shooter Velo", shooter.getVelocity());
+        telemetry.addData("Shooter Target Velo", shooter.getTargetVelocity());
+        telemetry.addData("Shooter shoot speed", shooterSpeedRPM);
+
+        telemetry.addLine("-------");
+
+        telemetry.update();
+    }
+}

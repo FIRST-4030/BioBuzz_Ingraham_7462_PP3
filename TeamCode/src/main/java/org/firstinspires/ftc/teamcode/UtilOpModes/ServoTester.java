@@ -14,7 +14,6 @@ import com.qualcomm.robotcore.hardware.Servo;
  * @date 11/13/2025
  */
 
-@Disabled
 @TeleOp(name = "ServoTester", group="Util")
 public class  ServoTester extends OpMode {
 //    @Override
@@ -27,7 +26,7 @@ public class  ServoTester extends OpMode {
 //
 //    }
 
-    String DEVICE_NAME = "spinServo";
+    String DEVICE_NAME = "pollenServo";
 
     Servo   servo;
     double  position = 0.5;
