@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.Chassis;
 import org.firstinspires.ftc.teamcode.ControlHub;
 import org.firstinspires.ftc.teamcode.Limelight;
 
+@Disabled
 @TeleOp(name = "TeleOpMain")
 public class TeleOpMain extends OpMode {
 
@@ -58,8 +59,8 @@ public class TeleOpMain extends OpMode {
     public void start() {
         collector.setCollectorSpeed(Collector.CollectorMode.IDLE);
         collector.setCollector();
-        shooter.setShooterMode(BiobuzzShooter.ShooterMode.IDLE);
-        shooter.setShooterDirection();
+        //shooter.setShooterMode(BiobuzzShooter.ShooterMode.IDLE);
+        //shooter.setShooterDirection();
         shooter.resetTargetVelocity();
         shooter.overridePower();
 
@@ -75,7 +76,7 @@ public class TeleOpMain extends OpMode {
                 collector.setCollectorSpeed(Collector.CollectorMode.IDLE);
                 collector.setCollector();
 
-                shooter.setShooterMode(BiobuzzShooter.ShooterMode.IDLE);
+                //shooter.setShooterMode(BiobuzzShooter.ShooterMode.IDLE);
                 shooter.setTargetVelocity(0);
 //
 //                if (shotTimer.milliseconds() >= 500 && shooterStopper < 0) {
@@ -93,7 +94,7 @@ public class TeleOpMain extends OpMode {
                 collector.setCollectorSpeed(Collector.CollectorMode.COLLECT);
                 collector.setCollector();
 
-                shooter.setShooterMode(BiobuzzShooter.ShooterMode.IDLE);
+                //shooter.setShooterMode(BiobuzzShooter.ShooterMode.IDLE);
                 //shooter.setShooterDirection();
                 shooter.resetTargetVelocity();
 
@@ -105,7 +106,7 @@ public class TeleOpMain extends OpMode {
                     collector.setCollectorSpeed(Collector.CollectorMode.COLLECT);
                     collector.setCollector();
 
-                    shooter.setShooterMode(BiobuzzShooter.ShooterMode.SHOOTING);
+                    //shooter.setShooterMode(BiobuzzShooter.ShooterMode.SHOOTING);
                     //shooter.setShooterDirection();
                     shooter.setTargetVelocity(shooterSpeedRPM);
 
@@ -114,7 +115,7 @@ public class TeleOpMain extends OpMode {
                     collector.setCollectorSpeed(Collector.CollectorMode.IDLE);
                     collector.setCollector();
 
-                    shooter.setShooterMode(BiobuzzShooter.ShooterMode.SHOOTING);
+                    //shooter.setShooterMode(BiobuzzShooter.ShooterMode.SHOOTING);
                     //shooter.setShooterDirection();
                     shooter.setTargetVelocity(shooterSpeedRPM);
 
@@ -174,10 +175,10 @@ public class TeleOpMain extends OpMode {
 
         telemetry.addLine("-------");
 
-        telemetry.addData("Shooter Target Velocity", shooter.getTargetVelocity());
+        //telemetry.addData("Shooter Target Velocity", shooter.getTargetVelocity());
         telemetry.addData("Current Shooter Velo (RPM)", shooter.getVelocity());
-        telemetry.addData("VeloError", shooter.getVeloError());
-        telemetry.addData("veloPower", shooter.getVeloPower());
+//        telemetry.addData("VeloError", shooter.getVeloError());
+//        telemetry.addData("veloPower", shooter.getVeloPower());
         telemetry.addData("shooterStopper", shooterStopper);
 
         telemetry.addLine("-------");

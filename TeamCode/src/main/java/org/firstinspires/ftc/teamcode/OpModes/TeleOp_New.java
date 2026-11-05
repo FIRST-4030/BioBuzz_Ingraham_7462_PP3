@@ -26,7 +26,7 @@ public class TeleOp_New extends OpMode {
     Collector collector;
     ElapsedTime shotTimer;
 
-    private double shooterSpeedRPM = -1500;
+    private double shooterSpeedRPM = -1550;
 
     boolean shooting = false;
 
@@ -46,14 +46,12 @@ public class TeleOp_New extends OpMode {
     public void init_loop() {
         limelight.updateData(); // This line is vital, and should be called first in the loop
         controlHub.processBotIdentificationTelemetry(telemetry);
-        Blackboard.initLoopProcess(telemetry, gamepad1);
     }
 
     public void start() {
         collector.setCollectorSpeed(Collector.CollectorMode.IDLE);
         collector.setCollector();
-        shooter.setShooterMode(BiobuzzShooter.ShooterMode.IDLE);
-        shooter.setShooterDirection();
+
         shooter.resetTargetVelocity();
         shooter.overridePower();
 
@@ -66,6 +64,9 @@ public class TeleOp_New extends OpMode {
         handleControls();
         handleModeControls();
         handleTelemetry();
+
+        shooter.overridePower();
+
         chassis.drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
     }
 
@@ -77,21 +78,13 @@ public class TeleOp_New extends OpMode {
         }
 
         if (gamepad1.dpadUpWasPressed()) {
-            shooterSpeedRPM -= 100;
+            shooterSpeedRPM -= 50;
         } else if (gamepad1.dpadDownWasPressed()) {
-            shooterSpeedRPM += 100;
+            shooterSpeedRPM += 50;
         } else if (gamepad1.dpadLeftWasPressed()) {
             shooterSpeedRPM = shooter.SHOOTER_CLOSE_SPEED;
         } else if (gamepad1.dpadRightWasPressed()) {
             shooterSpeedRPM = shooter.SHOOTER_FAR_SPEED;
-        }
-
-        if (gamepad1.aWasPressed()) {
-            shooter.setShooterMode(BiobuzzShooter.ShooterMode.SHOOTING);
-            shooter.setTargetVelocity(1000);
-        } else if (gamepad1.aWasReleased()) {
-            shooter.setTargetVelocity(0);
-            shooter.setShooterMode(BiobuzzShooter.ShooterMode.IDLE);
         }
     }
 
@@ -105,8 +98,6 @@ public class TeleOp_New extends OpMode {
             collector.setCollectorSpeed(Collector.CollectorMode.COLLECT);
             collector.setCollector();
 
-            shooter.setShooterMode(BiobuzzShooter.ShooterMode.IDLE);
-
             shooter.setTargetVelocity(0);
             shooter.setShooterServos(false);
             shooter.setBackSpinPower(0);
@@ -114,9 +105,7 @@ public class TeleOp_New extends OpMode {
             collector.setCollectorSpeed(Collector.CollectorMode.IDLE);
             collector.setCollector();
 
-            shooter.setShooterMode(BiobuzzShooter.ShooterMode.IDLE);
-
-            //shooter.setTargetVelocity(0);
+            shooter.setTargetVelocity(0);
             shooter.setShooterServos(false);
             shooter.setBackSpinPower(0);
         }
@@ -125,15 +114,14 @@ public class TeleOp_New extends OpMode {
     public void shoot() {
         collector.setCollectorSpeed(Collector.CollectorMode.IDLE);
         collector.setCollector();
-        shooter.setShooterMode(BiobuzzShooter.ShooterMode.SHOOTING);
         shooter.setTargetVelocity(shooterSpeedRPM);
-        shooter.setBackSpinPower(0.7);
+        shooter.setBackSpinPower(0.8);
 
-        if (shooter.atSpeed() && shotTimer.milliseconds() <= 5000) {
+        if (shooter.atSpeed() && shotTimer.milliseconds() <= 3000) {
             shooter.setShooterServos(true);
             collector.setCollectorSpeed(Collector.CollectorMode.COLLECT);
             collector.setCollector();
-        } else if (shotTimer.milliseconds() > 5000) {
+        } else if (shotTimer.milliseconds() > 3000) {
             shooting = false;
         }
     }
@@ -141,7 +129,7 @@ public class TeleOp_New extends OpMode {
     public void handleTelemetry() {
         telemetry.addData("In shooting mode", shooting);
         telemetry.addData("Shooter Velo", shooter.getVelocity());
-        telemetry.addData("Shooter Target Velo", shooter.getTargetVelocity());
+        telemetry.addData("Shooter Target Velocity", shooter.getTargetVelocity());
         telemetry.addData("Shooter shoot speed", shooterSpeedRPM);
 
         telemetry.addLine("-------");
