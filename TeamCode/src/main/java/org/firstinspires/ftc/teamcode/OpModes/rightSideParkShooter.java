@@ -31,13 +31,13 @@ public class rightSideParkShooter extends OpMode {
     //bank of poses
     Poses poses = new Poses();
     private Path StartToShoot() {
-        return line(poses.rightStartPos, poses.shootIG).linear(poses.rightStartPos, poses.shootIG);
+        return line(poses.startPosRight, poses.shootPosRight).linear(poses.startPosRight, poses.shootPosRight);
     }
     private Path ShootToPrePark(){
-        return line(poses.shootIG, poses.preParkPos).linear(poses.shootIG, poses.preParkPos);
+        return line(poses.shootPosRight, poses.preParkPosRight).linear(poses.shootPosRight, poses.preParkPosRight);
     }
     private Path Park(){
-        return line(poses.preParkPos, poses.RSParkPos).linear(poses.preParkPos, poses.RSParkPos);
+        return line(poses.preParkPosRight, poses.parkPosRight).linear(poses.preParkPosRight, poses.parkPosRight);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class rightSideParkShooter extends OpMode {
         follower = controlHub.getRobotSpecificPedroConstants();
 
         //sets pose to "start"
-        follower.setPose(poses.rightStartPos);
+        follower.setPose(poses.startPosRight);
         follower.update();
     }
     @Override

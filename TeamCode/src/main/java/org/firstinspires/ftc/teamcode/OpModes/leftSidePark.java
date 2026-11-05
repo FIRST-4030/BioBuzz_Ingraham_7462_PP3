@@ -18,10 +18,14 @@ import org.firstinspires.ftc.teamcode.Poses;
 
 @Autonomous(name = "Left Side Park")
 public class leftSidePark extends OpMode {
+    //components
     ControlHub controlHub;
     private Follower follower;
+
     //bank of poses
     Poses poses = new Poses();
+
+    //Path methods
     private Path AudienceStartToShoot() {
         return line(poses.startPosLeft, poses.shootPosLeft).linear(poses.startPosLeft, poses.shootPosLeft);
     }
@@ -39,6 +43,9 @@ public class leftSidePark extends OpMode {
         return curve(poses.startPosLeft, poses.parkControlPosLeft, poses.parkPosLeft).linear(poses.startPosLeft, poses.parkPosLeft);
     }
 
+    /**
+     * Initializes values
+     */
     @Override
     public void init() {
         controlHub = new ControlHub(hardwareMap);
@@ -51,25 +58,29 @@ public class leftSidePark extends OpMode {
         follower.setPose(poses.startPosLeft);
         follower.update();
     }
+
+    /**
+     * tell the robot what to do
+     */
     @Override
     public void start() {
         schedule(simplifiedRout());
     }
 
+    /**
+     * keep values current
+     */
     @Override
     public void loop() {
         Scheduler.execute();
         follower.update();
     }
 
-    private Command autoRoutine(){
-        return sequential(
-                follow(follower, AudienceStartToShoot()),
-                follow(follower, AudienceShootToCollect()),
-                follow(follower, CollectToShoot()),
-                follow(follower, ShootToPark())
-        );
-    }
+    /**
+     * the routine :broken hear:
+     *
+     * @return returns the paths for the auto
+     */
     private Command simplifiedRout(){
         return sequential(
             follow(follower, startToPark())

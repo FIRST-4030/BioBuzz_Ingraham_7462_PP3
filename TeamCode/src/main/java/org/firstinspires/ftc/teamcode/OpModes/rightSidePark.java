@@ -18,20 +18,27 @@ import org.firstinspires.ftc.teamcode.Poses;
 
 @Autonomous(name = "Right Side Park")
 public class rightSidePark extends OpMode {
+    //Components
     ControlHub controlHub;
     private Follower follower;
+
     //bank of poses
     Poses poses = new Poses();
+
+    //path methods
     private Path StartToShoot() {
-        return line(poses.rightStartPos, poses.shootIG).linear(poses.rightStartPos, poses.shootIG);
+        return line(poses.startPosRight, poses.shootPosRight).linear(poses.startPosRight, poses.shootPosRight);
     }
     private Path ShootToPrePark(){
-        return line(poses.shootIG, poses.preParkPos).linear(poses.shootIG, poses.preParkPos);
+        return line(poses.shootPosRight, poses.preParkPosRight).linear(poses.shootPosRight, poses.preParkPosRight);
     }
     private Path Park(){
-        return line(poses.preParkPos, poses.RSParkPos).linear(poses.preParkPos, poses.RSParkPos);
+        return line(poses.preParkPosRight, poses.parkPosRight).linear(poses.preParkPosRight, poses.parkPosRight);
     }
 
+    /**
+     * initialize values and stuff
+     */
     @Override
     public void init() {
         controlHub = new ControlHub(hardwareMap);
@@ -41,20 +48,32 @@ public class rightSidePark extends OpMode {
         follower = controlHub.getRobotSpecificPedroConstants();
 
         //sets pose to "start"
-        follower.setPose(poses.rightStartPos);
+        follower.setPose(poses.startPosRight);
         follower.update();
     }
+
+    /**
+     * tell the auto to run the desired routine
+     */
     @Override
     public void start() {
         schedule(autoRoutine());
     }
 
+    /**
+     * keep where the robot in the routine current
+     */
     @Override
     public void loop() {
         Scheduler.execute();
         follower.update();
     }
 
+    /**
+     * what the robot should do
+     *
+     * @return sequential containing what the robot should do
+     */
     private Command autoRoutine(){
         return sequential(
                 follow(follower, StartToShoot()),

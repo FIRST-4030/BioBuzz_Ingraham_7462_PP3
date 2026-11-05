@@ -34,6 +34,7 @@ import java.util.Set;
 
 @Autonomous(name = "Left Side Park Shooter")
 public class leftSideParkShooter extends OpMode {
+    //components
     ControlHub controlHub;
     private Follower follower;
     private Collector collector;

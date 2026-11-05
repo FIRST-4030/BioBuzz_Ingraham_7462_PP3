@@ -25,7 +25,7 @@ public class PP3AutoBase extends OpMode {
     //bank of poses
     Poses poses = new Poses();
     private Path StartToEnd(){
-        return line(poses.testStart, poses.testMid).linear(poses.testStart, poses.testMid);
+        return line(poses.startPosLeft, poses.parkPosLeft).linear(poses.startPosLeft, poses.parkPosLeft);
     }
 
     private Command autoRoutine(){
@@ -44,7 +44,7 @@ public class PP3AutoBase extends OpMode {
         follower = controlHub.getRobotSpecificPedroConstants();
 
         //sets pose to "start" PUT START POSE HERE
-        follower.setPose(poses.testStart);
+        follower.setPose(poses.startPosLeft);
         follower.update();
     }
     @Override

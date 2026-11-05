@@ -12,21 +12,6 @@ public class Poses {
     private final PoseFactory poseFactory = PoseFactory.degrees();
     public Poses(){}
 
-    //test auto poses
-    public final Pose testStart = poseFactory.of(24, 24, 0);
-    public final Pose corner1 = poseFactory.of(48, 24, 0);
-    public final Pose corner2 = poseFactory.of(48, 48, 0);
-    public final Pose corner3 = poseFactory.of(24, 48, 0);
-
-
-
-    //other test poses
-    public final Pose testStart2 = poseFactory.of(56, 8, 0);
-    public final Pose testMid = poseFactory.of(18, 63, 0);
-    public final Pose testControlPoint = poseFactory.of(14,26, 0);
-
-
-
     //left side park
     public final Pose startPosLeft = poseFactory.of(63, 5, FORWARD);
     public final Pose shootPosLeft = poseFactory.of(56, 20, FORWARD);
@@ -42,19 +27,15 @@ public class Poses {
     public final Pose zero = poseFactory.of(0,0, FORWARD);
 
     //right side park
-    public final Pose rightStartPos = poseFactory.of(78, ROBOT_SIZE, FORWARD);
-    public final Pose shootIG = poseFactory.of(82, 30, FORWARD);
-    public final Pose preParkPos = poseFactory.of(144 - ROBOT_SIZE, ROBOT_SIZE, FORWARD);
-    public final Pose RSParkPos = poseFactory.of(144 - ROBOT_SIZE, 30, FORWARD);
+    public final Pose startPosRight = poseFactory.of(78, ROBOT_SIZE, FORWARD);
+    public final Pose shootPosRight = poseFactory.of(82, 30, FORWARD);
+    public final Pose preParkPosRight = poseFactory.of(144 - ROBOT_SIZE, ROBOT_SIZE, FORWARD);
+    public final Pose parkPosRight = poseFactory.of(144 - ROBOT_SIZE, 30, FORWARD);
 
 
 
 
-    //debug poses
-    public final Pose testLineStart = poseFactory.of(0,0, FORWARD);
-    public final Pose testLineEnd = poseFactory.of(0, 20, FORWARD);
-    public final Pose arenaCorner1 = poseFactory.of(ROBOT_SIZE, ROBOT_SIZE, FORWARD);
-    public final Pose arenaCorner2 = poseFactory.of(144 - ROBOT_SIZE, 144 - ROBOT_SIZE, FORWARD);
+    //Useful methods
 
     public Pose of (double x, double y, double heading) {
         return poseFactory.of(x, y, heading);
