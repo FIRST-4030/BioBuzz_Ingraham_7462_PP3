@@ -27,7 +27,7 @@ import org.firstinspires.ftc.teamcode.Poses;
 
 import java.util.function.BooleanSupplier;
 
-@Autonomous(name = "Auto for parking on left side")
+@Autonomous(name = "Auto for parking on left")
 public class rightParkAuto extends OpMode {
     //Components and stuff
     ControlHub controlHub;
