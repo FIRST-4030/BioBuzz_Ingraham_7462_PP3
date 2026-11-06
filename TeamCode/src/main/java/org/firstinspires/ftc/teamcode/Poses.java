@@ -20,7 +20,7 @@ public class Poses {
     public final Pose collectPosLeft = poseFactory.of(13, 10, FORWARD + 90);
 
     public final Pose parkControlPosLeft = poseFactory.of(20, 49 , FORWARD);
-    public final Pose parkPosLeft = poseFactory.of(9, 94, FORWARD - 90);
+    public final Pose parkPosLeft = poseFactory.of(11, 94, FORWARD - 90);
 
     //worst case
     public final Pose parkNoHeading = poseFactory.of(9, 94, FORWARD);
@@ -30,7 +30,7 @@ public class Poses {
     public final Pose startPosRight = poseFactory.of(78, ROBOT_SIZE, FORWARD);
     public final Pose shootPosRight = poseFactory.of(82, 30, FORWARD);
     public final Pose preParkPosRight = poseFactory.of(144 - ROBOT_SIZE, ROBOT_SIZE, FORWARD);
-    public final Pose parkPosRight = poseFactory.of(144 - ROBOT_SIZE, 30, FORWARD);
+    public final Pose parkPosRight = poseFactory.of(140 - ROBOT_SIZE, 30, FORWARD);
 
 
 
