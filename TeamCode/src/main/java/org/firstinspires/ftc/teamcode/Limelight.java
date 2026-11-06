@@ -134,6 +134,8 @@ public class Limelight {
     }
 
     public boolean canSeeHiveCell(HiveCell hiveCell) {
+        if (!latestStatusIsValid()) return false;
+
         boolean canSeeHiveCell = false;
 
         List<LLResultTypes.FiducialResult> fiducials = internalLatestResult.getFiducialResults();

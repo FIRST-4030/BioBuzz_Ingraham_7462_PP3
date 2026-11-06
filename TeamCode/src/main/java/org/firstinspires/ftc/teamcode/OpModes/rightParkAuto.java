@@ -27,7 +27,7 @@ import org.firstinspires.ftc.teamcode.Poses;
 
 import java.util.function.BooleanSupplier;
 
-@Autonomous(name = "Auto for parking on left")
+@Autonomous(name = "Auto for parking on Right")
 public class rightParkAuto extends OpMode {
     //Components and stuff
     ControlHub controlHub;
@@ -44,10 +44,10 @@ public class rightParkAuto extends OpMode {
         return line(poses.startPosRight, poses.shootPosRight).linear(poses.startPosRight, poses.shootPosRight);
     }
     private Path shootToPrePark() {
-        return curve(poses.shootPosRight, poses.preParkPosRight).linear(poses.shootPosRight, poses.preParkPosRight);
+        return line(poses.shootPosRight, poses.preParkPosRight).linear(poses.shootPosRight, poses.preParkPosRight);
     }
     private Path startToPark(){
-        return curve(poses.startPosLeft, poses.parkControlPosLeft, poses.parkPosLeft).linear(poses.startPosLeft, poses.parkPosLeft);
+        return line(poses.shootPosRight, poses.preParkPosRight).linear(poses.shootPosRight, poses.preParkPosRight);
     }
     private Path robotToPark(){
         Pose currentPose = follower.pose();
