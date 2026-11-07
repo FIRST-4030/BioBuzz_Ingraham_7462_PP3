@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.OpModes;
 
-import static com.pedropathing.api.Paths.curve;
 import static com.pedropathing.api.Paths.line;
 import static com.pedropathing.ivy.Scheduler.schedule;
 import static com.pedropathing.ivy.commands.Commands.instant;
@@ -27,7 +26,7 @@ import org.firstinspires.ftc.teamcode.Poses;
 
 import java.util.function.BooleanSupplier;
 
-@Autonomous(name = "Auto for parking on Right")
+@Autonomous(name = "Right side park auto")
 public class rightParkAuto extends OpMode {
     //Components and stuff
     ControlHub controlHub;
@@ -46,12 +45,12 @@ public class rightParkAuto extends OpMode {
     private Path shootToPrePark() {
         return line(poses.shootPosRight, poses.preParkPosRight).linear(poses.shootPosRight, poses.preParkPosRight);
     }
-    private Path startToPark(){
-        return line(poses.shootPosRight, poses.preParkPosRight).linear(poses.shootPosRight, poses.preParkPosRight);
+    private Path preParkToPark(){
+        return line(poses.preParkPosRight, poses.parkPosRight).linear(poses.preParkPosRight, poses.parkPosRight);
     }
     private Path robotToPark(){
         Pose currentPose = follower.pose();
-        return curve(currentPose, poses.of(24, 24), poses.parkPosLeft).linear(currentPose, poses.parkPosLeft);
+        return line(currentPose, poses.preParkPosRight).linear(currentPose, poses.preParkPosRight);
     }
 
     /**
@@ -73,7 +72,7 @@ public class rightParkAuto extends OpMode {
         follower = controlHub.getRobotSpecificPedroConstants();
 
         //sets pose to "start"
-        follower.setPose(poses.startPosLeft);
+        follower.setPose(poses.startPosRight);
         follower.update();
     }
 
@@ -92,8 +91,12 @@ public class rightParkAuto extends OpMode {
     public void loop() {
         shooter.overridePower();
         collector.setCollector();
+        limelight.updateData();
         Scheduler.execute();
         follower.update();
+        telemetry.addData("can see hive", limelight.canSeeHiveCell(Limelight.HiveCell.BLUE_AUDIENCE));
+        telemetry.addData("can see other hive", limelight.canSeeHiveCell(Limelight.HiveCell.RED_SCORING));
+        telemetry.addData("shooter at speed", shooter.atSpeed());
     }
 
     /**
@@ -106,26 +109,22 @@ public class rightParkAuto extends OpMode {
     public BooleanSupplier isAtVelocity = () -> shooter.atSpeed();
     private Command autoLogic(){
         return sequential(
+
                 instant(() -> {
                     collector.setCollectorSpeed(Collector.CollectorMode.COLLECT);
                     shooter.setShooterServos(false);
                     shooter.resetTargetVelocity();
-                    shooter.setBackSpinPower(0.8);
+                    shooter.setBackSpinPower(0.9);
+                    shooter.setTargetVelocity(-1460);
                 }),
                 follow(follower, startToShoot()),
                 waitUntil(() ->
-                        limelight.canSeeHiveCell(Limelight.HiveCell.BLUE_AUDIENCE) ||
-                        limelight.canSeeHiveCell(Limelight.HiveCell.RED_SCORING)
+                        limelight.canSeeHiveCell(Limelight.HiveCell.RED_SCORING) ||
+                        limelight.canSeeHiveCell(Limelight.HiveCell.BLUE_AUDIENCE)
                 ),
-                instant(() -> {
-                        collector.setCollector();
-                        shooter.setTargetVelocity(-1700);
-                        waitMs(2000);
-                }),
                 lazy(() -> waitUntil(isAtVelocity)),
-                instant(()->shooter.setShooterServos(true)),
-                waitMs(5000),
-                follow(follower, shootToPrePark())
+                waitMs(2000),
+                instant(()->shooter.setShooterServos(true))
         );
     }
 
@@ -144,7 +143,8 @@ public class rightParkAuto extends OpMode {
                         waitMs(20000),
                         autoLogic()
                 ),
-                lazy(() -> follow(follower, robotToPark()))
+                lazy(() -> follow(follower, robotToPark())),
+                instant(()->follow(follower, preParkToPark()))
         );
     }
 }

@@ -33,7 +33,7 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
 
-@Autonomous(name = "Auto for parking on left")
+@Autonomous(name = "Left side park auto")
 public class leftParkAuto extends OpMode {
     //Components and stuff
     ControlHub controlHub;
@@ -102,6 +102,7 @@ public class leftParkAuto extends OpMode {
     public void loop() {
         shooter.overridePower();
         collector.setCollector();
+        limelight.updateData();
         Scheduler.execute();
         follower.update();
     }
@@ -123,14 +124,11 @@ public class leftParkAuto extends OpMode {
                     shooter.setBackSpinPower(0.9);
                 }),
                 follow(follower, startToShoot()),
-//                waitUntil(() ->
-//                        limelight.canSeeHiveCell(Limelight.HiveCell.RED_AUDIENCE) ||
-//                        limelight.canSeeHiveCell(Limelight.HiveCell.BLUE_SCORING)
-//                ),
-                instant(() -> {
-                        collector.setCollector();
-                        shooter.setTargetVelocity(-1460);
-                }),
+                waitUntil(() ->
+                        limelight.canSeeHiveCell(Limelight.HiveCell.RED_AUDIENCE) ||
+                        limelight.canSeeHiveCell(Limelight.HiveCell.BLUE_SCORING)
+                ),
+                instant(() -> shooter.setTargetVelocity(-1460)),
                 lazy(() -> waitUntil(isAtVelocity)),
                 waitMs(2000),
                 instant(()->shooter.setShooterServos(true)),
@@ -143,21 +141,22 @@ public class leftParkAuto extends OpMode {
                     collector.setCollectorSpeed(Collector.CollectorMode.COLLECT);
                     shooter.setShooterServos(false);
                     shooter.resetTargetVelocity();
-                    shooter.setBackSpinPower(0.9);
+                    shooter.setBackSpinPower(0.8);
                 }),
                 follow(follower, startToShoot()),
-//                waitUntil(() ->
-//                        limelight.canSeeHiveCell(Limelight.HiveCell.RED_AUDIENCE) ||
-//                        limelight.canSeeHiveCell(Limelight.HiveCell.BLUE_SCORING)
-//                ),
+                waitUntil(() ->
+                        limelight.canSeeHiveCell(Limelight.HiveCell.RED_AUDIENCE) ||
+                                limelight.canSeeHiveCell(Limelight.HiveCell.BLUE_SCORING)
+                ),
                 instant(() -> {
                     collector.setCollector();
-                    shooter.setTargetVelocity(-1460);
+                    shooter.setTargetVelocity(-1500);
+                    waitMs(2000);
                 }),
                 lazy(() -> waitUntil(isAtVelocity)),
-                waitMs(2000),
                 instant(()->shooter.setShooterServos(true)),
-                waitMs(3000)
+                waitMs(5000),
+                instant(()->shooter.setShooterServos(false))
         );
     }
 
@@ -176,31 +175,8 @@ public class leftParkAuto extends OpMode {
                         waitMs(20000),
                         autoLogic()
                 ),
+                instant(()-> collector.setCollectorSpeed(Collector.CollectorMode.IDLE)),
                 lazy(() -> follow(follower, robotToPark()))
-        );
-    }
-
-    private Command shoot(){
-        return sequential(
-            instant(() -> {
-                collector.setCollectorSpeed(Collector.CollectorMode.COLLECT);
-                shooter.setShooterServos(false);
-                shooter.resetTargetVelocity();
-                shooter.setBackSpinPower(0.8);
-            }),
-            follow(follower, startToShoot()),
-            waitUntil(() ->
-                limelight.canSeeHiveCell(Limelight.HiveCell.RED_AUDIENCE) ||
-                limelight.canSeeHiveCell(Limelight.HiveCell.BLUE_SCORING)
-            ),
-            instant(() -> {
-                collector.setCollector();
-                shooter.setTargetVelocity(-1500);
-                waitMs(2000);
-            }),
-            lazy(() -> waitUntil(isAtVelocity)),
-            instant(()->shooter.setShooterServos(true)),
-            waitMs(5000)
         );
     }
 }
