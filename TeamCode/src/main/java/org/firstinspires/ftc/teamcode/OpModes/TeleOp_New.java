@@ -71,12 +71,15 @@ public class TeleOp_New extends OpMode {
     }
 
     public void handleControls() {
+        //GAMEPAD 1
         if (gamepad1.leftBumperWasPressed()) {
             chassis.setMaxSpeed(0.5);
         } else if (gamepad1.leftBumperWasReleased()) {
             chassis.setMaxSpeed(1.0);
         }
 
+
+        //GAMEPAD 2 (not implemented yet b/c of testing)
         if (gamepad1.dpadUpWasPressed()) {
             shooterSpeedRPM -= 50;
         } else if (gamepad1.dpadDownWasPressed()) {

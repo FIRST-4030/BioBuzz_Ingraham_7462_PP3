@@ -11,6 +11,8 @@ public class BiobuzzShooter {
     DcMotorEx nectarMotor;
     DcMotorEx pollenMotor;
     DcMotorEx backSpinMotor;
+//    DcMotorEx nectarBackSpin;
+//    DcMotorEx pollenBackSpin;
 
     Servo nectarServo;
     Servo pollenServo;
@@ -50,6 +52,10 @@ public class BiobuzzShooter {
         pollenServo = hardwareMap.get(Servo.class, "pollenServo");
 
         backSpinMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "backSpinMotor");
+//        nectarBackSpin = (DcMotorEx) hardwareMap.get(DcMotor.class, "nectarBackSpin");
+//        nectarBackSpin.setDirection(DcMotor.Direction.FORWARD);
+//        pollenBackSpin = (DcMotorEx) hardwareMap.get(DcMotor.class, "pollenBackSpin");
+//        pollenBackSpin.setDirection(DcMotor.Direction.REVERSE);
 
         this.limelight = limelight;
     }
@@ -60,12 +66,14 @@ public class BiobuzzShooter {
         // CONTROLLER:  feedfoward = Kvelo + feedback = Kpos
         veloPower = veloError * Kp;
         double setPower = targetVelocity * Kvelo + veloPower;
-        nectarMotor.setPower(setPower);
+        //nectarMotor.setPower(setPower);
         pollenMotor.setPower(setPower);
     }
 
     public void setBackSpinPower(double power) {
         backSpinMotor.setPower(power);
+//        nectarBackSpin.setPower(power);
+//        pollenBackSpin.setPower(power);
     }
 
     public void setShooterServos(boolean open) {
@@ -80,7 +88,7 @@ public class BiobuzzShooter {
 
     public void setPower(double power) {
         pollenMotor.setPower(power);
-        nectarMotor.setPower(power);
+        //nectarMotor.setPower(power);
     }
 
     public void resetTargetVelocity() {
