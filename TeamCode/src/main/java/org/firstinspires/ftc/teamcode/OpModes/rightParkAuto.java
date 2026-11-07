@@ -15,6 +15,7 @@ import com.pedropathing.ivy.Command;
 import com.pedropathing.ivy.Scheduler;
 import com.pedropathing.math.Pose;
 import com.pedropathing.paths.Path;
+import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
@@ -97,6 +98,15 @@ public class rightParkAuto extends OpMode {
         telemetry.addData("can see hive", limelight.canSeeHiveCell(Limelight.HiveCell.BLUE_AUDIENCE));
         telemetry.addData("can see other hive", limelight.canSeeHiveCell(Limelight.HiveCell.RED_SCORING));
         telemetry.addData("shooter at speed", shooter.atSpeed());
+        if (limelight.getLatestResult() != null) {
+            for (LLResultTypes.FiducialResult tag :
+                    limelight.getLatestResult().getFiducialResults()) {
+
+                telemetry.addData("Detected Tag ID", tag.getFiducialId());
+                telemetry.addData("Mapped HiveCell",
+                        limelight.getHiveCellFromTagID(tag.getFiducialId()));
+            }
+        }
     }
 
     /**
@@ -114,13 +124,13 @@ public class rightParkAuto extends OpMode {
                     collector.setCollectorSpeed(Collector.CollectorMode.COLLECT);
                     shooter.setShooterServos(false);
                     shooter.resetTargetVelocity();
-                    shooter.setBackSpinPower(0.9);
-                    shooter.setTargetVelocity(-1460);
+                    shooter.setBackSpinPower(0.8);
+                    shooter.setTargetVelocity(-1480);
                 }),
                 follow(follower, startToShoot()),
                 waitUntil(() ->
-                        limelight.canSeeHiveCell(Limelight.HiveCell.RED_SCORING) ||
-                        limelight.canSeeHiveCell(Limelight.HiveCell.BLUE_AUDIENCE)
+                        limelight.canSeeHiveCell(Limelight.HiveCell.BLUE_AUDIENCE) ||
+                        limelight.canSeeHiveCell(Limelight.HiveCell.RED_SCORING)
                 ),
                 lazy(() -> waitUntil(isAtVelocity)),
                 waitMs(2000),

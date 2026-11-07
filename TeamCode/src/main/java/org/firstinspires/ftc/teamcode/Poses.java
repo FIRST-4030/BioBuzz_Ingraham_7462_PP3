@@ -32,7 +32,7 @@ public class Poses {
     public final Pose startPosRight = poseFactory.of(78, 9, FORWARD);
     public final Pose shootPosRight = poseFactory.of(83, 27, FORWARD);
     public final Pose preParkPosRight = poseFactory.of(144 - ROBOT_SIZE, ROBOT_SIZE + 4, FORWARD);
-    public final Pose parkPosRight = poseFactory.of(140 - ROBOT_SIZE, 30, FORWARD);
+    public final Pose parkPosRight = poseFactory.of(120, 30, FORWARD);
 
 
 

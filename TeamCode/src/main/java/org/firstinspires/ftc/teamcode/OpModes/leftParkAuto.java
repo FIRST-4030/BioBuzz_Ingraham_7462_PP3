@@ -14,23 +14,15 @@ import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.ivy.Command;
 import com.pedropathing.ivy.Scheduler;
-import com.pedropathing.ivy.behaviors.BlockedBehavior;
-import com.pedropathing.ivy.behaviors.ConflictBehavior;
-import com.pedropathing.ivy.behaviors.EndCondition;
-import com.pedropathing.ivy.behaviors.InterruptedBehavior;
 import com.pedropathing.math.Pose;
 import com.pedropathing.paths.Path;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-
 import org.firstinspires.ftc.teamcode.BiobuzzShooter;
 import org.firstinspires.ftc.teamcode.Collector;
 import org.firstinspires.ftc.teamcode.ControlHub;
 import org.firstinspires.ftc.teamcode.Limelight;
 import org.firstinspires.ftc.teamcode.Poses;
-
-import java.util.Collections;
-import java.util.Set;
 import java.util.function.BooleanSupplier;
 
 @Autonomous(name = "Left side park auto")
@@ -96,7 +88,7 @@ public class leftParkAuto extends OpMode {
     }
 
     /**
-     * Runs every something i honestly don't know
+     * Runs every something
      **/
     @Override
     public void loop() {
@@ -105,6 +97,9 @@ public class leftParkAuto extends OpMode {
         limelight.updateData();
         Scheduler.execute();
         follower.update();
+        telemetry.addData("can see hive", limelight.canSeeHiveCell(Limelight.HiveCell.BLUE_SCORING));
+        telemetry.addData("can see other hive", limelight.canSeeHiveCell(Limelight.HiveCell.RED_AUDIENCE));
+        telemetry.addData("shooter at speed", shooter.atSpeed());
     }
 
     /**
@@ -121,38 +116,27 @@ public class leftParkAuto extends OpMode {
                     collector.setCollectorSpeed(Collector.CollectorMode.COLLECT);
                     shooter.setShooterServos(false);
                     shooter.resetTargetVelocity();
-                    shooter.setBackSpinPower(0.9);
+                    shooter.setBackSpinPower(0.8);
                 }),
                 follow(follower, startToShoot()),
                 waitUntil(() ->
                         limelight.canSeeHiveCell(Limelight.HiveCell.RED_AUDIENCE) ||
                         limelight.canSeeHiveCell(Limelight.HiveCell.BLUE_SCORING)
                 ),
-                instant(() -> shooter.setTargetVelocity(-1460)),
+                instant(() -> shooter.setTargetVelocity(-1480)),
                 lazy(() -> waitUntil(isAtVelocity)),
                 waitMs(2000),
-                instant(()->shooter.setShooterServos(true)),
+                instant(() -> shooter.setShooterServos(true)),
                 waitMs(3000),
                 follow(follower, shootToPreCollect()),
-                instant(()->shooter.setShooterServos(false)),
+                instant(() -> shooter.setShooterServos(false)),
                 follow(follower, preCollectToCollect()),
                 follow(follower, collectToShoot()),
-                instant(() -> {
-                    collector.setCollectorSpeed(Collector.CollectorMode.COLLECT);
-                    shooter.setShooterServos(false);
-                    shooter.resetTargetVelocity();
-                    shooter.setBackSpinPower(0.8);
-                }),
                 follow(follower, startToShoot()),
                 waitUntil(() ->
                         limelight.canSeeHiveCell(Limelight.HiveCell.RED_AUDIENCE) ||
-                                limelight.canSeeHiveCell(Limelight.HiveCell.BLUE_SCORING)
+                        limelight.canSeeHiveCell(Limelight.HiveCell.BLUE_SCORING)
                 ),
-                instant(() -> {
-                    collector.setCollector();
-                    shooter.setTargetVelocity(-1500);
-                    waitMs(2000);
-                }),
                 lazy(() -> waitUntil(isAtVelocity)),
                 instant(()->shooter.setShooterServos(true)),
                 waitMs(5000),

@@ -18,7 +18,7 @@ import org.firstinspires.ftc.teamcode.ControlHub;
 import org.firstinspires.ftc.teamcode.Poses;
 
 @Disabled
-@Autonomous(name = "Right Side Park")
+@Autonomous(name = "Right Side Park (only use for blue side)")
 public class rightSidePark extends OpMode {
     //Components
     ControlHub controlHub;

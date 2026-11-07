@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.hardware.limelightvision.LLStatus;
@@ -140,7 +142,6 @@ public class Limelight {
 
         List<LLResultTypes.FiducialResult> fiducials = internalLatestResult.getFiducialResults();
         if (fiducials == null) return false;
-
         for (LLResultTypes.FiducialResult fiducial : fiducials) {
             if (getHiveCellFromTagID(fiducial.getFiducialId()) == hiveCell) {
                 canSeeHiveCell = true;
