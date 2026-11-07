@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.Chassis;
 import org.firstinspires.ftc.teamcode.ControlHub;
 import org.firstinspires.ftc.teamcode.Limelight;
 
-@TeleOp(name = "TeleOp_New")
+@TeleOp(name = "TeleOp")
 public class TeleOp_New extends OpMode {
 
     ControlHub controlHub;

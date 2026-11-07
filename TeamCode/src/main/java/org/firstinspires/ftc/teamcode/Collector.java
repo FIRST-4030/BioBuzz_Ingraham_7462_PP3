@@ -11,7 +11,7 @@ public class Collector {
 
     DcMotor collectorMotor;
 
-    private static final double COLLECTOR_LOW_POWER = 0.7;
+    private static final double COLLECTOR_LOW_POWER = 0.5;
     private static final double COLLECTOR_HIGH_POWER = 1.0;
     public enum CollectorMode {
         IDLE,

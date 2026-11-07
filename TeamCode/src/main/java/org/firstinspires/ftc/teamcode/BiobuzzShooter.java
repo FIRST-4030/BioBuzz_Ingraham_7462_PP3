@@ -82,7 +82,7 @@ public class BiobuzzShooter {
             pollenServo.setPosition(0.7);
         } else {
             nectarServo.setPosition(0.55);
-            pollenServo.setPosition(0.3);
+            pollenServo.setPosition(0.2);
         }
     }
 
