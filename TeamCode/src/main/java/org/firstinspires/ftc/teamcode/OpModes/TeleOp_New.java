@@ -130,9 +130,9 @@ public class TeleOp_New extends OpMode {
     }
 
     public void handleTelemetry() {
-        telemetry.addData("In shooting mode", shooting);
-        telemetry.addData("Shooter Velo", shooter.getVelocity());
-        telemetry.addData("Shooter Target Velocity", shooter.getTargetVelocity());
+        //telemetry.addData("In shooting mode", shooting);
+        telemetry.addData("Shooter Target Velocity", shooter.getVelocity());
+        //telemetry.addData("Shooter Target Velocity", shooter.getTargetVelocity());
         telemetry.addData("Shooter shoot speed", shooterSpeedRPM);
 
         telemetry.addLine("-------");
