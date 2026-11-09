@@ -15,6 +15,7 @@ public class Collector {
     private static final double COLLECTOR_HIGH_POWER = 1.0;
     public enum CollectorMode {
         IDLE,
+
         COLLECT,
         REVERSED
     }

@@ -29,8 +29,8 @@ public class BiobuzzShooter {
     private double veloError;
 
     public double targetVelocity = 0;
-    public double SHOOTER_CLOSE_SPEED = -1500;
-    public double SHOOTER_FAR_SPEED = -2000;
+    public double SHOOTER_CLOSE_SPEED = -1400;
+    public double SHOOTER_FAR_SPEED = -1800;
 
     private boolean reachedReadyToShoot = false;
     public boolean manualReadyToShoot = false;

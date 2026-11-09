@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  * Use to determine Kvelo and Kp, for the controller.
  * Data logging is used to record real-time data.
  */
+@Disabled
 @TeleOp(name = "Flywheel K Term Tuner")
 //@Disabled //comment this out when ready to add to android phone
 public class FlyWheelTuner extends OpMode {

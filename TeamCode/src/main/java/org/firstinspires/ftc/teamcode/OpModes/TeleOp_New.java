@@ -26,7 +26,7 @@ public class TeleOp_New extends OpMode {
     Collector collector;
     ElapsedTime shotTimer;
 
-    private double shooterSpeedRPM = -1550;
+    private double shooterSpeedRPM = -1400;
 
     boolean shooting = false;
 
@@ -104,6 +104,9 @@ public class TeleOp_New extends OpMode {
             shooter.setTargetVelocity(0);
             shooter.setShooterServos(false);
             shooter.setBackSpinPower(0);
+        } else if (gamepad1.a) {
+            collector.setCollectorSpeed(Collector.CollectorMode.REVERSED);
+            collector.setCollector();
         } else {
             collector.setCollectorSpeed(Collector.CollectorMode.IDLE);
             collector.setCollector();
@@ -131,9 +134,9 @@ public class TeleOp_New extends OpMode {
 
     public void handleTelemetry() {
         //telemetry.addData("In shooting mode", shooting);
-        telemetry.addData("Shooter Target Velocity", shooter.getVelocity());
+        telemetry.addData("Shooter Velocity", shooter.getVelocity());
         //telemetry.addData("Shooter Target Velocity", shooter.getTargetVelocity());
-        telemetry.addData("Shooter shoot speed", shooterSpeedRPM);
+        telemetry.addData("Shooter Target Velocity", shooterSpeedRPM);
 
         telemetry.addLine("-------");
 

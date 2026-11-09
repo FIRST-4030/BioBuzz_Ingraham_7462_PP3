@@ -17,6 +17,7 @@ import com.pedropathing.math.Pose;
 import com.pedropathing.paths.Path;
 import com.qualcomm.hardware.limelightvision.LLResultTypes;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.BiobuzzShooter;
@@ -27,7 +28,8 @@ import org.firstinspires.ftc.teamcode.Poses;
 
 import java.util.function.BooleanSupplier;
 
-@Autonomous(name = "Right side park auto")
+@Disabled
+@Autonomous(name = "Right side park auto (use for Red)")
 public class rightParkAuto extends OpMode {
     //Components and stuff
     ControlHub controlHub;

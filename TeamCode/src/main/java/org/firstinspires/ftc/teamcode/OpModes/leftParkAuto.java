@@ -119,24 +119,30 @@ public class leftParkAuto extends OpMode {
                     shooter.setBackSpinPower(0.8);
                 }),
                 follow(follower, startToShoot()),
-                waitUntil(() ->
-                        limelight.canSeeHiveCell(Limelight.HiveCell.RED_AUDIENCE) ||
-                        limelight.canSeeHiveCell(Limelight.HiveCell.BLUE_SCORING)
-                ),
-                instant(() -> shooter.setTargetVelocity(-1480)),
+//                waitUntil(() ->
+//                        limelight.canSeeHiveCell(Limelight.HiveCell.RED_AUDIENCE) ||
+//                        limelight.canSeeHiveCell(Limelight.HiveCell.BLUE_SCORING)
+//                ),
+                instant(() -> shooter.setTargetVelocity(-1440)),
                 lazy(() -> waitUntil(isAtVelocity)),
                 waitMs(2000),
-                instant(() -> shooter.setShooterServos(true)),
+                instant(() -> {
+                shooter.setShooterServos(true);
+                collector.setCollectorSpeed(Collector.CollectorMode.REVERSED);
+                }),
                 waitMs(3000),
                 follow(follower, shootToPreCollect()),
-                instant(() -> shooter.setShooterServos(false)),
+                instant(() -> {
+                    collector.setCollectorSpeed(Collector.CollectorMode.COLLECT);
+                    shooter.setShooterServos(false);
+                }),
                 follow(follower, preCollectToCollect()),
                 follow(follower, collectToShoot()),
                 follow(follower, startToShoot()),
-                waitUntil(() ->
-                        limelight.canSeeHiveCell(Limelight.HiveCell.RED_AUDIENCE) ||
-                        limelight.canSeeHiveCell(Limelight.HiveCell.BLUE_SCORING)
-                ),
+//                waitUntil(() ->
+//                        limelight.canSeeHiveCell(Limelight.HiveCell.RED_AUDIENCE) ||
+//                        limelight.canSeeHiveCell(Limelight.HiveCell.BLUE_SCORING)
+//                ),
                 lazy(() -> waitUntil(isAtVelocity)),
                 instant(()->shooter.setShooterServos(true)),
                 waitMs(5000),
@@ -156,7 +162,7 @@ public class leftParkAuto extends OpMode {
     private Command autoRoutine(){
         return sequential(
                 deadline(
-                        waitMs(20000),
+                        waitMs(22000),
                         autoLogic()
                 ),
                 instant(()-> collector.setCollectorSpeed(Collector.CollectorMode.IDLE)),
