@@ -48,13 +48,16 @@ public class limelightRSPark extends OpMode {
     private Path startToShoot() {
         return line(poses.startPosRight, poses.shootPosRight).linear(poses.startPosRight, poses.shootPosRight);
     }
+
     private Path shootToPrePark() {
         return line(poses.shootPosRight, poses.preParkPosRight).linear(poses.shootPosRight, poses.preParkPosRight);
     }
-    private Path preParkToPark(){
+
+    private Path preParkToPark() {
         return line(poses.preParkPosRight, poses.parkPosRight).linear(poses.preParkPosRight, poses.parkPosRight);
     }
-    private Path robotToPark(){
+
+    private Path robotToPark() {
         Pose currentPose = follower.pose();
         return line(currentPose, poses.preParkPosRight).linear(currentPose, poses.preParkPosRight);
     }
@@ -122,15 +125,18 @@ public class limelightRSPark extends OpMode {
         telemetry.addData("can see other hive", limelight.canSeeHiveCell(Limelight.HiveCell.RED_SCORING));
         telemetry.addData("shooter at speed", shooter.atSpeed());
     }
+
     /**
      * Contains the logic for the routine and where it wants to go
      * Important Lambdas:   instant runs a code bite
-     *                      follow schedules a path to follow
-     *                      wait until waits until a bool is met
-     * @return  returns sequential containing the routine
+     * follow schedules a path to follow
+     * wait until waits until a bool is met
+     *
+     * @return returns sequential containing the routine
      **/
     public BooleanSupplier isAtVelocity = () -> shooter.atSpeed();
-    private Command autoLogic(){
+
+    private Command autoLogic() {
         return sequential(
                 instant(() -> {
                     collector.setCollectorSpeed(Collector.CollectorMode.COLLECT);
@@ -141,33 +147,32 @@ public class limelightRSPark extends OpMode {
                 }),
                 follow(follower, startToShoot()),
                 waitUntil(() ->
-                        limelight.canSeeHiveCell(Limelight.HiveCell.BLUE_AUDIENCE)||
-                        limelight.canSeeHiveCell(Limelight.HiveCell.RED_SCORING)
+                        limelight.canSeeHiveCell(Limelight.HiveCell.BLUE_AUDIENCE) ||
+                                limelight.canSeeHiveCell(Limelight.HiveCell.RED_SCORING)
                 ),
                 lazy(() -> waitUntil(isAtVelocity)),
                 waitMs(2000),
-                instant(()->shooter.setShooterServos(true))
+                instant(() -> shooter.setShooterServos(true))
 
         );
     }
 
 
-
     /**
      * this method contains the logic for parking automatically
      * Important Lambdas:   deadline runs two or more processes in parallel and stops all processes once one finishes
-     *                      lazy doesn't finalize when the code runs instead it finalizes it values when it's ran
+     * lazy doesn't finalize when the code runs instead it finalizes it values when it's ran
      *
      * @return returns a sequential containing logic for the routine
      **/
-    private Command autoRoutine(){
+    private Command autoRoutine() {
         return sequential(
                 deadline(
                         waitMs(20000),
                         autoLogic()
                 ),
                 lazy(() -> follow(follower, robotToPark())),
-                instant(()->follow(follower, preParkToPark()))
+                instant(() -> follow(follower, preParkToPark()))
         );
     }
 }
