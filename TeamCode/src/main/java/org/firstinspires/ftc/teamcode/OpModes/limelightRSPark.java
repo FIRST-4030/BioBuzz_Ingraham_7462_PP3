@@ -142,7 +142,8 @@ public class limelightRSPark extends OpMode {
                     collector.setCollectorSpeed(Collector.CollectorMode.COLLECT);
                     shooter.setShooterServos(false);
                     shooter.resetTargetVelocity();
-                    shooter.setBackSpinPower(0.8);
+                    //shooter.setBackSpinPower(0.8);
+                    shooter.setBackSpinTargetVelocity(5000);
                     shooter.setTargetVelocity(-1460);
                 }),
                 follow(follower, startToShoot()),

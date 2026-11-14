@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import java.util.List;
 
-public class Limelight2 {
+public class BiobuzzLimelight {
     public enum tagIDs {
         RED_SCORING,
         RED_AUDIENCE,
@@ -24,7 +24,7 @@ public class Limelight2 {
     private LLResult latestResult;
     private LLStatus Status;
 
-    public Limelight2(HardwareMap hardwareMap) {
+    public BiobuzzLimelight(HardwareMap hardwareMap) {
         limelight3A = hardwareMap.get(Limelight3A.class, "limelight");
         limelight3A.setPollRateHz(100);
         limelight3A.start();

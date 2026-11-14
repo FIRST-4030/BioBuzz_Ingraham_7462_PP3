@@ -11,7 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
  * Shooter Class.  Implements a feed forward plus feed back control system
  */
 public class Shooter {
-    private final DcMotorEx nectarShooter;
+    //private final DcMotorEx nectarShooter;
     private final DcMotorEx pollenShooter;
 
     // Kvelo is the feed forward term.  Tune first by adjusting until rotational velo target is met
@@ -29,15 +29,15 @@ public class Shooter {
     /**
      * Shooter Constructor
      * @param hardwareMap FTC harware map
-     * @param leftName  The config file name for the motor
+     * //@param leftName  The config file name for the motor
      * @param dir Direction Boolean
      */
-    public Shooter(HardwareMap hardwareMap, String leftName, String rightName, Boolean dir) {
-        nectarShooter = (DcMotorEx) hardwareMap.get(DcMotor.class, leftName);
+    public Shooter(HardwareMap hardwareMap, String rightName, Boolean dir) {
+        //nectarShooter = (DcMotorEx) hardwareMap.get(DcMotor.class, leftName);
         pollenShooter = (DcMotorEx) hardwareMap.get((DcMotor.class), rightName);
         //shooter.setDirection(DcMotor.Direction.FORWARD);
-        nectarShooter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        nectarShooter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //nectarShooter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //nectarShooter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         pollenShooter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         pollenShooter.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         // WITH OUT!
@@ -49,21 +49,21 @@ public class Shooter {
      * overridePower method should be called in the main loop()
      */
     public void overridePower() {
-        double currentVelocity = (pollenShooter.getVelocity() / 28) * 60 * GEAR_RATIO;//(pollenShooter.getVelocity(AngleUnit.DEGREES) * 60 / 360) * GEAR_RATIO * 100; //60 seconds, 360 degrees/rotation
+        double currentVelocity = (pollenShooter.getVelocity() / 28) * 60;//(pollenShooter.getVelocity(AngleUnit.DEGREES) * 60 / 360) * GEAR_RATIO * 100; //60 seconds, 360 degrees/rotation
         double veloError = targetVelocity - currentVelocity;
         // CONTROLLER:  feedfoward = Kvelo + feedback = Kpos
         veloPower = veloError * Kp;
         double setPower = targetVelocity * Kvelo + veloPower;
-        nectarShooter.setPower(setPower);
+        //nectarShooter.setPower(setPower);
         pollenShooter.setPower(setPower);
     }
     private void setMotorDirection(Boolean dir) {
         //True = forward, false = backwards
         if (dir) {
-            nectarShooter.setDirection(DcMotor.Direction.REVERSE);
+            //nectarShooter.setDirection(DcMotor.Direction.REVERSE);
             pollenShooter.setDirection(DcMotor.Direction.FORWARD);
         } else {
-            nectarShooter.setDirection(DcMotor.Direction.FORWARD);
+            //nectarShooter.setDirection(DcMotor.Direction.FORWARD);
             pollenShooter.setDirection(DcMotor.Direction.REVERSE);
         }
     }
@@ -82,7 +82,7 @@ public class Shooter {
     public double getPower() { return pollenShooter.getPower();   }
     public double getVeloPower() { return veloPower;}
     public double getVelocity() {
-        return (pollenShooter.getVelocity(AngleUnit.DEGREES) * 60 / 360) * GEAR_RATIO * 100; //60 seconds, 360 degrees/rotation
+        return (pollenShooter.getVelocity() / 28) * 60; //60 seconds, 360 degrees/rotation
     }
 
     /**
@@ -108,7 +108,7 @@ public class Shooter {
     }
 
     public void setPower(double power) {
-        nectarShooter.setPower(power);
+        //nectarShooter.setPower(power);
         pollenShooter.setPower(power);
     }
     public double getTargetVelocity() {return targetVelocity;}

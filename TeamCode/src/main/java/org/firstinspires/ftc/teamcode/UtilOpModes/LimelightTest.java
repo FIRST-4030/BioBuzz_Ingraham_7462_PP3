@@ -19,11 +19,12 @@ import com.pedropathing.paths.Path;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
+import org.firstinspires.ftc.teamcode.BiobuzzLimelight;
 import org.firstinspires.ftc.teamcode.BiobuzzShooter;
 import org.firstinspires.ftc.teamcode.Collector;
 import org.firstinspires.ftc.teamcode.ControlHub;
 import org.firstinspires.ftc.teamcode.Limelight;
-import org.firstinspires.ftc.teamcode.Limelight2;
+import org.firstinspires.ftc.teamcode.BiobuzzLimelight;
 import org.firstinspires.ftc.teamcode.Poses;
 
 import java.util.function.BooleanSupplier;
@@ -34,7 +35,7 @@ public class LimelightTest extends OpMode {
     ControlHub controlHub;
     private Follower follower;
     private Collector collector;
-    private Limelight2 limelight;
+    private BiobuzzLimelight limelight;
     private BiobuzzShooter shooter;
     private Limelight l;
 
@@ -72,7 +73,7 @@ public class LimelightTest extends OpMode {
         //initialize components
         controlHub = new ControlHub(hardwareMap);
         collector = new Collector(hardwareMap);
-        limelight = new Limelight2(hardwareMap);
+        limelight = new BiobuzzLimelight(hardwareMap);
         l = new Limelight(hardwareMap);
         shooter = new BiobuzzShooter(hardwareMap, l);
 
@@ -129,7 +130,8 @@ public class LimelightTest extends OpMode {
                     collector.setCollectorSpeed(Collector.CollectorMode.COLLECT);
                     shooter.setShooterServos(false);
                     shooter.resetTargetVelocity();
-                    shooter.setBackSpinPower(0.8);
+                    //shooter.setBackSpinPower(4000, 4000);
+                    shooter.setBackSpinTargetVelocity(4000);
                 }),
                 follow(follower, startToShoot())
         );

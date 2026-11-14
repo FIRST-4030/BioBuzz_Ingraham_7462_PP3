@@ -27,8 +27,16 @@ public class BiobuzzShooter {
     private double Kp = 0.0045; // FeedBack term is Kp (proportional term)
     private double veloPower = 0;
     private double veloError;
+    private double backKvelo = 0.000174; // power multiplier for rotations per second
+    private double backKp = 0.00012; // FeedBack term is Kp (proportional term)
+    private double pollenBackVeloPower = 0;
+    private double pollenBackVeloError;
+    private double nectarBackVeloPower = 0;
+    private double nectarBackVeloError;
 
     public double targetVelocity = 0;
+    public double pollenBackTargetVelo = 0;
+    public double nectarBackTargetVelo = 0;
     public double SHOOTER_CLOSE_SPEED = -1400;
     public double SHOOTER_FAR_SPEED = -1800;
 
@@ -69,28 +77,32 @@ public class BiobuzzShooter {
         //nectarMotor.setPower(setPower);
         pollenMotor.setPower(setPower);
 
-//        double currentBackVelocity = getVelocity();
-//        veloError = targetVelocity - currentVelocity;
-//        // CONTROLLER:  feedfoward = Kvelo + feedback = Kpos
-//        veloPower = veloError * Kp;
-//        double setBackPower = targetVelocity * Kvelo + veloPower;
-//        //nectarMotor.setPower(setPower);
-//        pollenMotor.setPower(setPower);
+        double pollenBackCurrentVelocity = getPollenBackSpinVelocity();
+        pollenBackVeloError = pollenBackTargetVelo - pollenBackCurrentVelocity;
+        pollenBackVeloPower = pollenBackVeloError * backKp;
+        double setPollenBackPower = pollenBackTargetVelo * backKvelo + pollenBackVeloPower;
+
+        double nectarBackCurrentVelocity = getNectarBackSpinVelocity();
+        nectarBackVeloError = nectarBackTargetVelo - nectarBackCurrentVelocity;
+        nectarBackVeloPower = nectarBackVeloError * backKp;
+        double setNectarBackPower = nectarBackTargetVelo * backKvelo + nectarBackVeloPower;
+
+        setBackSpinPower(setPollenBackPower, setNectarBackPower);//, setNectarBackPower);
     }
 
-    public void setBackSpinPower(double power) {
+    public void setBackSpinPower(double pollenPower, double nectarPower) { //add nectar power
         //backSpinMotor.setPower(power);
-        nectarBackSpin.setPower(power);
-        pollenBackSpin.setPower(power);
+        nectarBackSpin.setPower(nectarPower);
+        pollenBackSpin.setPower(pollenPower);
     }
 
     public void setShooterServos(boolean open) {
         if (open) {
-            nectarServo.setPosition(0.05);
-            pollenServo.setPosition(0.65);
+            nectarServo.setPosition(0.85);
+            pollenServo.setPosition(0.15);
         } else {
-            nectarServo.setPosition(0.55);
-            pollenServo.setPosition(0.4);
+            nectarServo.setPosition(0.3);
+            pollenServo.setPosition(0.7);
         }
     }
 
@@ -111,12 +123,25 @@ public class BiobuzzShooter {
         this.targetVelocity = velocity;
     }
 
+    public void setBackSpinTargetVelocity(double velocity) {
+        this.pollenBackTargetVelo = velocity;
+        this.nectarBackTargetVelo = velocity;
+    }
+
     public double getPower() {
         return pollenMotor.getPower();
     }
 
     public double getVelocity() {
         return (pollenMotor.getVelocity() / TICKS_REV) * 60 * GEAR_RATIO;
+    }
+
+    public double getPollenBackSpinVelocity() {
+        return (pollenBackSpin.getVelocity() / TICKS_REV) * 60;
+    }
+
+    public double getNectarBackSpinVelocity() {
+        return (nectarBackSpin.getVelocity() / TICKS_REV) * 60;
     }
 
     public boolean atSpeed() {
