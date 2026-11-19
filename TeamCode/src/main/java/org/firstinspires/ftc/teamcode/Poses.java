@@ -12,9 +12,13 @@ public class Poses {
     private final PoseFactory poseFactory = PoseFactory.degrees();
     public Poses(){}
 
+    //universal
+    public final Pose middle = poseFactory.of(72, 72, FORWARD);
+
     //left side park
     public final Pose startPosLeft = poseFactory.of(62, 12, FORWARD);
     public final Pose shootPosLeft = poseFactory.of(58, 23, FORWARD);
+    public final Pose oppositeSideShootPosLeft = poseFactory.of(86, 121, FORWARD + 180);
 
     public final Pose collectControlPosLeft = poseFactory.of(35, 10 , FORWARD);
     public final Pose collectPosLeft = poseFactory.of(12, 12, FORWARD);
@@ -33,6 +37,7 @@ public class Poses {
     public final Pose shootPosRight = poseFactory.of(83, 27, FORWARD);
     public final Pose preParkPosRight = poseFactory.of(144 - ROBOT_SIZE, ROBOT_SIZE + 4, FORWARD);
     public final Pose parkPosRight = poseFactory.of(120, 30, FORWARD);
+
 
 
 
