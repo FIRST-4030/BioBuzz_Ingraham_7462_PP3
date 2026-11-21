@@ -13,6 +13,7 @@ import static com.pedropathing.ivy.pedro.PedroCommands.follow;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.ivy.Command;
+import com.pedropathing.ivy.CommandBuilder;
 import com.pedropathing.ivy.Scheduler;
 import com.pedropathing.math.Pose;
 import com.pedropathing.paths.Path;
@@ -119,7 +120,8 @@ public class limelightLSPark extends OpMode {
     public BooleanSupplier isAtVelocity = () -> shooter.atSpeed();
 
     private Command autoLogic() {
-        return sequential(
+
+        CommandBuilder sequential = sequential(
                 instant(() -> {
                     collector.setCollectorSpeed(Collector.CollectorMode.COLLECT);
                     shooter.setShooterServos(false);
@@ -135,9 +137,7 @@ public class limelightLSPark extends OpMode {
                 instant(() -> shooter.setTargetVelocity(-1440)),
                 lazy(() -> waitUntil(isAtVelocity)),
                 waitMs(2000),
-                instant(() -> {
-                    shooter.setShooterServos(true);
-                }),
+                instant(() -> shooter.setShooterServos(true)),
                 waitMs(3000),
                 follow(follower, shootToPreCollect()),
                 instant(() -> {
@@ -148,7 +148,6 @@ public class limelightLSPark extends OpMode {
                 }),
                 follow(follower, preCollectToCollect()),
                 follow(follower, collectToShoot()),
-                follow(follower, startToShoot()),
 //                waitUntil(() ->
 //                        limelight.canSeeHiveCell(Limelight.HiveCell.RED_AUDIENCE) ||
 //                        limelight.canSeeHiveCell(Limelight.HiveCell.BLUE_SCORING)
@@ -158,6 +157,7 @@ public class limelightLSPark extends OpMode {
                 waitMs(5000),
                 instant(() -> shooter.setShooterServos(false))
         );
+        return sequential;
     }
 
 

@@ -160,7 +160,7 @@ public class hopefullyTwoTipAuto extends OpMode {
             instant(()->{
                 shooter.setShooterServos(false);
                 shooter.resetTargetVelocity();
-                shooter.setBackSpinPower(0.8, 0.8);
+                shooter.setBackSpinPower(0.8);
                 shooter.setBackSpinTargetVelocity(5000);
                 shooter.setTargetVelocity(-1460);
             }),

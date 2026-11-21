@@ -26,7 +26,7 @@ public class  ServoTester extends OpMode {
 //
 //    }
 
-    String DEVICE_NAME = "pollenServo";
+    String DEVICE_NAME = "nectarServo";
 
     Servo   servo;
     double  position = 0.5;

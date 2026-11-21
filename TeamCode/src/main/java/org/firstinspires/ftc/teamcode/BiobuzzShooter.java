@@ -8,11 +8,9 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 public class BiobuzzShooter {
 
-    //DcMotorEx nectarMotor;
+    DcMotorEx nectarMotor;
     DcMotorEx pollenMotor;
-    //DcMotorEx backSpinMotor;
-    DcMotorEx nectarBackSpin;
-    DcMotorEx pollenBackSpin;
+    DcMotorEx backSpinMotor;
 
     Servo nectarServo;
     Servo pollenServo;
@@ -29,14 +27,12 @@ public class BiobuzzShooter {
     private double veloError;
     private double backKvelo = 0.000174; // power multiplier for rotations per second
     private double backKp = 0.00012; // FeedBack term is Kp (proportional term)
-    private double pollenBackVeloPower = 0;
-    private double pollenBackVeloError;
-    private double nectarBackVeloPower = 0;
-    private double nectarBackVeloError;
+    private double backVeloPower = 0;
+    private double backVeloError;
 
     public double targetVelocity = 0;
-    public double pollenBackTargetVelo = 0;
-    public double nectarBackTargetVelo = 0;
+    public double backTargetVelo = 0;
+    //public double nectarBackTargetVelo = 0;
     public double SHOOTER_CLOSE_SPEED = -1400;
     public double SHOOTER_FAR_SPEED = -1800;
 
@@ -45,10 +41,10 @@ public class BiobuzzShooter {
 
     public BiobuzzShooter(HardwareMap hardwareMap, Limelight limelight) {
 
-//        nectarMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "nectarShooter");
-//        nectarMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        nectarMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);  // WITH OUT!
-//        nectarMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        nectarMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "nectarShooter");
+        nectarMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        nectarMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);  // WITH OUT!
+        nectarMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
         nectarServo = hardwareMap.get(Servo.class, "nectarServo");
 
@@ -59,11 +55,11 @@ public class BiobuzzShooter {
 
         pollenServo = hardwareMap.get(Servo.class, "pollenServo");
 
-        //backSpinMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "backSpinMotor");
-        nectarBackSpin = (DcMotorEx) hardwareMap.get(DcMotor.class, "nectarBackSpin");
-        nectarBackSpin.setDirection(DcMotor.Direction.FORWARD);
-        pollenBackSpin = (DcMotorEx) hardwareMap.get(DcMotor.class, "pollenBackSpin");
-        pollenBackSpin.setDirection(DcMotor.Direction.REVERSE);
+        backSpinMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "backSpinMotor");
+//        nectarBackSpin = (DcMotorEx) hardwareMap.get(DcMotor.class, "nectarBackSpin");
+//        nectarBackSpin.setDirection(DcMotor.Direction.FORWARD);
+//        pollenBackSpin = (DcMotorEx) hardwareMap.get(DcMotor.class, "pollenBackSpin");
+//        pollenBackSpin.setDirection(DcMotor.Direction.REVERSE);
 
         this.limelight = limelight;
     }
@@ -74,41 +70,33 @@ public class BiobuzzShooter {
         // CONTROLLER:  feedfoward = Kvelo + feedback = Kpos
         veloPower = veloError * Kp;
         double setPower = targetVelocity * Kvelo + veloPower;
-        //nectarMotor.setPower(setPower);
+        nectarMotor.setPower(setPower);
         pollenMotor.setPower(setPower);
 
-        double pollenBackCurrentVelocity = getPollenBackSpinVelocity();
-        pollenBackVeloError = pollenBackTargetVelo - pollenBackCurrentVelocity;
-        pollenBackVeloPower = pollenBackVeloError * backKp;
-        double setPollenBackPower = pollenBackTargetVelo * backKvelo + pollenBackVeloPower;
-
-        double nectarBackCurrentVelocity = getNectarBackSpinVelocity();
-        nectarBackVeloError = nectarBackTargetVelo - nectarBackCurrentVelocity;
-        nectarBackVeloPower = nectarBackVeloError * backKp;
-        double setNectarBackPower = nectarBackTargetVelo * backKvelo + nectarBackVeloPower;
-
-        setBackSpinPower(setPollenBackPower, setNectarBackPower);//, setNectarBackPower);
+        double pollenBackCurrentVelocity = getBackSpinVelocity();
+        backVeloError = backTargetVelo - pollenBackCurrentVelocity;
+        backVeloPower = backVeloError * backKp;
+        double setBackPower = backTargetVelo * backKvelo + backVeloPower;
+        setBackSpinPower(setBackPower);
     }
 
-    public void setBackSpinPower(double pollenPower, double nectarPower) { //add nectar power
-        //backSpinMotor.setPower(power);
-        nectarBackSpin.setPower(nectarPower);
-        pollenBackSpin.setPower(pollenPower);
+    public void setBackSpinPower(double power) {
+        backSpinMotor.setPower(-power);
     }
 
     public void setShooterServos(boolean open) {
         if (open) {
-            nectarServo.setPosition(0.85);
-            pollenServo.setPosition(0.15);
+            nectarServo.setPosition(0.7);
+            pollenServo.setPosition(0.5);
         } else {
-            nectarServo.setPosition(0.3);
-            pollenServo.setPosition(0.7);
+            nectarServo.setPosition(0.2);
+            pollenServo.setPosition(0.1);
         }
     }
 
     public void setPower(double power) {
         pollenMotor.setPower(power);
-        //nectarMotor.setPower(power);
+        nectarMotor.setPower(power);
     }
 
     public void resetTargetVelocity() {
@@ -124,24 +112,19 @@ public class BiobuzzShooter {
     }
 
     public void setBackSpinTargetVelocity(double velocity) {
-        this.pollenBackTargetVelo = velocity;
-        this.nectarBackTargetVelo = velocity;
+        this.backTargetVelo = velocity;
     }
 
     public double getPower() {
-        return pollenMotor.getPower();
+        return nectarMotor.getPower();
     }
 
     public double getVelocity() {
-        return (pollenMotor.getVelocity() / TICKS_REV) * 60 * GEAR_RATIO;
+        return (nectarMotor.getVelocity() / TICKS_REV) * 60 * GEAR_RATIO;
     }
 
-    public double getPollenBackSpinVelocity() {
-        return (pollenBackSpin.getVelocity() / TICKS_REV) * 60;
-    }
-
-    public double getNectarBackSpinVelocity() {
-        return (nectarBackSpin.getVelocity() / TICKS_REV) * 60;
+    public double getBackSpinVelocity() {
+        return (backSpinMotor.getVelocity() / TICKS_REV) * 60;
     }
 
     public boolean atSpeed() {

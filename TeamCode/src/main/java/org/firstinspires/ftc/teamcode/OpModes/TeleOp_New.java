@@ -78,8 +78,6 @@ public class TeleOp_New extends OpMode {
             chassis.setMaxSpeed(1.0);
         }
 
-
-        //GAMEPAD 2 (not implemented yet b/c of testing)
         if (gamepad1.dpadUpWasPressed()) {
             shooterSpeedRPM -= 50;
         } else if (gamepad1.dpadDownWasPressed()) {
@@ -103,7 +101,6 @@ public class TeleOp_New extends OpMode {
 
             shooter.setTargetVelocity(0);
             shooter.setShooterServos(false);
-            //shooter.setBackSpinPower(0);
             shooter.setBackSpinTargetVelocity(0);
         } else if (gamepad1.a) {
             collector.setCollectorSpeed(Collector.CollectorMode.REVERSED);
@@ -114,7 +111,6 @@ public class TeleOp_New extends OpMode {
 
             shooter.setTargetVelocity(0);
             shooter.setShooterServos(false);
-            //shooter.setBackSpinPower(0);
             shooter.setBackSpinTargetVelocity(0);
         }
     }
@@ -123,8 +119,7 @@ public class TeleOp_New extends OpMode {
         collector.setCollectorSpeed(Collector.CollectorMode.IDLE);
         collector.setCollector();
         shooter.setTargetVelocity(shooterSpeedRPM);
-        shooter.setBackSpinTargetVelocity(5000);
-        //shooter.setBackSpinPower(0.8);
+        shooter.setBackSpinTargetVelocity(4000);
 
         if (shooter.atSpeed() && shotTimer.milliseconds() <= 3000) {
             shooter.setShooterServos(true);
@@ -136,17 +131,13 @@ public class TeleOp_New extends OpMode {
     }
 
     public void handleTelemetry() {
-        //telemetry.addData("In shooting mode", shooting);
         telemetry.addData("Shooter Velocity", shooter.getVelocity());
-        //telemetry.addData("Shooter Target Velocity", shooter.getTargetVelocity());
         telemetry.addData("Shooter Target Velocity", shooterSpeedRPM);
-
-        //telemetry.addData("Backspin Velocity (RPM)", shooter.getBackSpinVelocity());
 
         telemetry.addLine("-------");
 
-        telemetry.addData("Pollen Backspin Velocity", shooter.getPollenBackSpinVelocity());
-        telemetry.addData("Nectar Backspin Velocity", shooter.getNectarBackSpinVelocity());
+        telemetry.addData("Backspin Target", shooter.backTargetVelo);
+        telemetry.addData("Backspin Velocity", shooter.getBackSpinVelocity());
 
         telemetry.update();
     }
