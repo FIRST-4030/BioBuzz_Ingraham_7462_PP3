@@ -119,7 +119,7 @@ public class TeleOp_New extends OpMode {
         collector.setCollectorSpeed(Collector.CollectorMode.IDLE);
         collector.setCollector();
         shooter.setTargetVelocity(shooterSpeedRPM);
-        shooter.setBackSpinTargetVelocity(4000);
+        shooter.setBackSpinTargetVelocity(3000);
 
         if (shooter.atSpeed() && shotTimer.milliseconds() <= 3000) {
             shooter.setShooterServos(true);

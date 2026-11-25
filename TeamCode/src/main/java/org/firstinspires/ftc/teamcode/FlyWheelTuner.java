@@ -30,7 +30,7 @@ public class FlyWheelTuner extends OpMode {
 
     @Override
     public void init() {
-        shooter = new Shooter(hardwareMap, "pollenBackSpin", false);
+        shooter = new Shooter(hardwareMap, "backSpinMotor", false);
         shooter.setControllerValues(0, Kvelo);
 
         collector = new Collector(hardwareMap);
