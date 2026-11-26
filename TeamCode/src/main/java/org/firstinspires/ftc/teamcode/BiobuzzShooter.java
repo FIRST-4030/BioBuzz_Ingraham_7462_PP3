@@ -26,13 +26,12 @@ public class BiobuzzShooter {
     private double veloPower = 0;
     private double veloError;
     private double backKvelo = 0.000174; // power multiplier for rotations per second
-    private double backKp = 0.0003; // FeedBack term is Kp (proportional term)
+    private double backKp = 0.00038; // FeedBack term is Kp (proportional term)
     private double backVeloPower = 0;
     private double backVeloError;
 
     public double targetVelocity = 0;
     public double backTargetVelo = 0;
-    //public double nectarBackTargetVelo = 0;
     public double SHOOTER_CLOSE_SPEED = -1400;
     public double SHOOTER_FAR_SPEED = -1800;
 
@@ -57,10 +56,6 @@ public class BiobuzzShooter {
 
         backSpinMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "backSpinMotor");
         backSpinMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-//        nectarBackSpin = (DcMotorEx) hardwareMap.get(DcMotor.class, "nectarBackSpin");
-//        nectarBackSpin.setDirection(DcMotor.Direction.FORWARD);
-//        pollenBackSpin = (DcMotorEx) hardwareMap.get(DcMotor.class, "pollenBackSpin");
-//        pollenBackSpin.setDirection(DcMotor.Direction.REVERSE);
 
         this.limelight = limelight;
     }
@@ -87,10 +82,10 @@ public class BiobuzzShooter {
 
     public void setShooterServos(boolean open) {
         if (open) {
-            nectarServo.setPosition(0.8);
+            nectarServo.setPosition(0.15);
             pollenServo.setPosition(0.5);
         } else {
-            nectarServo.setPosition(0.4);
+            nectarServo.setPosition(0.65);
             pollenServo.setPosition(0.1);
         }
     }
@@ -134,6 +129,6 @@ public class BiobuzzShooter {
     }
 
     public int getTicks() {
-        return pollenMotor.getCurrentPosition();
+        return nectarMotor.getCurrentPosition();
     }
 }

@@ -26,7 +26,8 @@ public class TeleOp_New extends OpMode {
     Collector collector;
     ElapsedTime shotTimer;
 
-    private double shooterSpeedRPM = -1400;
+    private double shooterSpeedRPM = -1700;
+    private double backSpinnerSpeedRPM = 1700;
 
     boolean shooting = false;
 
@@ -71,7 +72,6 @@ public class TeleOp_New extends OpMode {
     }
 
     public void handleControls() {
-        //GAMEPAD 1
         if (gamepad1.leftBumperWasPressed()) {
             chassis.setMaxSpeed(0.5);
         } else if (gamepad1.leftBumperWasReleased()) {
@@ -82,10 +82,17 @@ public class TeleOp_New extends OpMode {
             shooterSpeedRPM -= 50;
         } else if (gamepad1.dpadDownWasPressed()) {
             shooterSpeedRPM += 50;
+        }
+//        else if (gamepad1.dpadLeftWasPressed()) {
+//            shooterSpeedRPM = shooter.SHOOTER_CLOSE_SPEED;
+//        } else if (gamepad1.dpadRightWasPressed()) {
+//            shooterSpeedRPM = shooter.SHOOTER_FAR_SPEED;
+//        }
+
+        else if (gamepad1.dpadRightWasPressed()) {
+            backSpinnerSpeedRPM += 100;
         } else if (gamepad1.dpadLeftWasPressed()) {
-            shooterSpeedRPM = shooter.SHOOTER_CLOSE_SPEED;
-        } else if (gamepad1.dpadRightWasPressed()) {
-            shooterSpeedRPM = shooter.SHOOTER_FAR_SPEED;
+            backSpinnerSpeedRPM -= 100;
         }
     }
 
@@ -119,7 +126,7 @@ public class TeleOp_New extends OpMode {
         collector.setCollectorSpeed(Collector.CollectorMode.IDLE);
         collector.setCollector();
         shooter.setTargetVelocity(shooterSpeedRPM);
-        shooter.setBackSpinTargetVelocity(3000);
+        shooter.setBackSpinTargetVelocity(backSpinnerSpeedRPM);
 
         if (shooter.atSpeed() && shotTimer.milliseconds() <= 3000) {
             shooter.setShooterServos(true);
@@ -136,7 +143,7 @@ public class TeleOp_New extends OpMode {
 
         telemetry.addLine("-------");
 
-        telemetry.addData("Backspin Target", shooter.backTargetVelo);
+        telemetry.addData("Backspin Target", backSpinnerSpeedRPM);
         telemetry.addData("Backspin Velocity", shooter.getBackSpinVelocity());
 
         telemetry.update();
